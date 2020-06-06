@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Chains>
+    <Chain>
+        <ChainName>טיב טעם</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/login</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>TivTaam</RootDir>
+        <Username>TivTaam</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>קואופ שופ</ChainName>
+        <ChainURL>http://www.coopisrael.coop/</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>שופרסל</ChainName>
+        <ChainURL>http://prices.shufersal.co.il/</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>דור אלון</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/login</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>DorAlon</RootDir>
+        <Username>doralon</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>סופר פארם</ChainName>
+        <ChainURL>http://prices.super-pharm.co.il/</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>ויקטורי</ChainName>
+        <ChainURL>http://matrixcatalog.co.il/NBCompetitionRegulations.aspx</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>מחסני השוק</ChainName>
+        <ChainURL>http://matrixcatalog.co.il/NBCompetitionRegulations.aspx</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>מחסני להב</ChainName>
+        <ChainURL>http://matrixcatalog.co.il/NBCompetitionRegulations.aspx</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>אושר עד</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/login</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>OsherAd</RootDir>
+        <Username>osherad</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>מגה קמעונות בע"מ</ChainName>
+        <ChainURL>http://publishprice.mega.co.il/</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>כל בו חצי חינם</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/file/d/HaziHinam/</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>HaziHinam</RootDir>
+        <Username>HaziHinam</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>קשת טעמים רשת סופרמרקטים</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/file/d/KeshetTaamim/</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>KeshetTaamim</RootDir>
+        <Username>Keshet</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>רמי לוי שיווק השקמה</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/file/d/RamiLevi/</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>RamiLevi</RootDir>
+        <Username>RamiLevi</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>סופר דוש</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/file/d/SuperDosh/</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>SuperDosh</RootDir>
+        <Username>SuperDosh</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>סופרשוק יוחננוף</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/logout</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>Yohananof</RootDir>
+        <Username>yohananof</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>עדן בריאות טבע מרקט</ChainName>
+        <ChainURL>http://operations.edenteva.co.il/Prices/index</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>EdenTeva</RootDir>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>יינות ביתן</ChainName>
+        <ChainURL>https://www.ybitan.co.il/links?link=0&amp;suffix=%2Fpirce_update</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>פרשמרקט</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/login</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>FreshMarket</RootDir>
+        <Username>freshmarket</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>זול ובגדול</ChainName>
+        <ChainURL>http://zolvebegadol.com/</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>סטופמרקט</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>StopMarket</RootDir>
+        <Username>StopMarket</Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>סאלח דבאח ובניו</ChainName>
+        <ChainURL>https://url.publishedprices.co.il/</ChainURL>
+        <ChainInterface>Cerberus</ChainInterface>
+        <RootDir>SalachDabach</RootDir>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>קינג סטור</ChainName>
+        <ChainURL>https://www.kingstore.co.il/Food_Law/Main.aspx</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>עוף והודו ברקת</ChainName>
+        <ChainURL>http://prices.super-bareket.co.il/</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+    <Chain>
+        <ChainName>​ניו פארם</ChainName>
+        <ChainURL>http://prices.new-pharm.co.il/</ChainURL>
+        <ChainInterface>Unique</ChainInterface>
+        <Username></Username>
+        <Password></Password>
+    </Chain>
+</Chains>
