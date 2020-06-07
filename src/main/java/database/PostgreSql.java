@@ -17,7 +17,7 @@ import java.util.Properties;
 
 public class PostgreSql {
 
-    private static HikariConfig config = new HikariConfig();
+    private static final HikariConfig config = new HikariConfig();
     private static DataSource ds;
 
     public static DataSource getDataSource() {

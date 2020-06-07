@@ -2,8 +2,8 @@ package server;
 
 import database.*;
 import org.quartz.SchedulerException;
-import server.plans.CerberusPlan;
 import server.plans.Plan;
+import server.plans.ShufersalPlan;
 
 import javax.xml.stream.XMLStreamException;
 import java.io.FileNotFoundException;
@@ -56,8 +56,9 @@ public class Tester {
 
             long startTime = System.nanoTime();
 
-            Plan plan1 = new CerberusPlan("tivtaam");
-            Plan plan2 = new CerberusPlan("osherad");
+            //Plan plan1 = new CerberusPlan("tivtaam");
+            //Plan plan2 = new CerberusPlan("yohananof");
+            Plan plan1 = new ShufersalPlan();
 
 
             if (true) {
@@ -66,7 +67,7 @@ public class Tester {
                 try {
                     manager = new PlanManager(50);
                     manager.addPlan(plan1);
-                    manager.addPlan(plan2);
+                    //manager.addPlan(plan2);
                     manager.start();
 
                     //manager.shutdown();

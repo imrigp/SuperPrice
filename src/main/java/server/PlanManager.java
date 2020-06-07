@@ -7,10 +7,7 @@ import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import server.plans.Plan;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 import static org.quartz.JobBuilder.newJob;
@@ -21,16 +18,16 @@ public class PlanManager {
 
     private final Scheduler scheduler;
     int id;
-    private final ThreadPoolExecutor parseExecutor;
+    private final ExecutorService parseExecutor;
     private final ThreadPoolExecutor downloadExecutor;
     private final BlockingQueue<XmlDownload> queue;
 
     public PlanManager(int threads) throws SchedulerException {
         scheduler = StdSchedulerFactory.getDefaultScheduler();
 
-        parseExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+        parseExecutor = Executors.newSingleThreadExecutor();
         queue = new LinkedBlockingDeque<>();
-        Consumer<XmlFile> consumer = (file) -> parseExecutor.execute(() -> System.out.println(file.getDate()));
+        Consumer<XmlFile> consumer = (file) -> parseExecutor.execute(() -> System.out.println("Parsing " + file.getType()));
 
         // prepare threads
         downloadExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(threads);

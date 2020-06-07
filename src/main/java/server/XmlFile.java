@@ -106,9 +106,7 @@ public class XmlFile implements Comparable<XmlFile> {
             if (m.find()) {
                 res = Long.parseLong(m.group(1));
             }
-        } catch (NumberFormatException e) {
-            // We just return -1
-        }
+        } catch (NumberFormatException ignored) {} // We just return -1
         return res;
     }
 

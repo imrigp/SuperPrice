@@ -34,7 +34,7 @@ public class CerberusPlan extends Plan {
     private static final String BASE_FILE_URL = "https://url.publishedprices.co.il/file/d/";
 
 
-    private String username;
+    private final String username;
 
     public CerberusPlan(String username) {
         this.username = username;
@@ -82,26 +82,8 @@ public class CerberusPlan extends Plan {
         return loginReq;
     }
 
-    @Override
-    public void scanForFiles() {
-        List<XmlDownload> list = getSortedFileList();
-        if (list == null) {
-            return;
-        }
-        // update latest file date
-        this.lastUpdated = list.get(list.size() - 1).getXmlFile().getDate();
-        System.out.println(lastUpdated);
-        // Add files to queue, let downloader threads take it from here
-        list.forEach(this::addToQueue);
-
-        // Add poisons to queue to notify threads they are done
-        /*for (int i = 0; i < getThreadNumber(); i++) {
-            addToQueue(XmlDownload.createPoison());
-        }*/
-    }
-
     // Returns a list of files added after our last updated date, ordered by ascending date
-    private ArrayList<XmlDownload> getSortedFileList() {
+    protected ArrayList<XmlDownload> getSortedFileList() {
         HttpPost ajax = getHttpPost();
         String jsonRes;
         JsonNode arrayNode;
@@ -141,7 +123,7 @@ public class CerberusPlan extends Plan {
             } catch (IllegalArgumentException e) {
                 continue; // Not valid xml file name
             }
-            // Don't include files we (potentially) already processed
+            // Don't include files we already processed
             if (xmlFile.getDate() < lastUpdated) {
                 continue;
             }
