@@ -1,12 +1,11 @@
 package database;
 
+import java.util.List;
 
-import server.Chain;
-
-import java.util.ArrayList;
+import server.entities.Chain;
 
 public interface ChainDao {
-    ArrayList<Chain> getAllChains();
+    List<Chain> getAllChains();
 
     Chain getChain(long id);
 

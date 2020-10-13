@@ -1,22 +1,20 @@
 package server;
 
-
 import java.util.concurrent.BlockingQueue;
 import java.util.function.Consumer;
 
-public class DownloaderThread<F, E extends Downloadable<F>> implements Runnable {
+public class DownloaderThread<E extends Downloadable<E>> implements Runnable {
 
-    private BlockingQueue<E> queue;
-    private Consumer<F> consumer;
+    private final BlockingQueue<E> queue;
+    private final Consumer<E> consumer;
 
-    public DownloaderThread(BlockingQueue<E> queue, Consumer<F> consumer) {
+    public DownloaderThread(BlockingQueue<E> queue, Consumer<E> consumer) {
         this.queue = queue;
         this.consumer = consumer;
     }
 
     @Override
     public void run() {
-        int i = 0;
         E el = null;
         while (true) {
             try {
@@ -28,7 +26,7 @@ public class DownloaderThread<F, E extends Downloadable<F>> implements Runnable 
                 e.printStackTrace();
             }
             assert el != null;
-            F f = el.execute(); // download file
+            E f = el.download(); // download file
             //System.out.println(Thread.currentThread().getName() + " downloaded: " + el);
             consumer.accept(f);
         }

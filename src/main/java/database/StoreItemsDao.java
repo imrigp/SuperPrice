@@ -1,6 +1,6 @@
 package database;
 
-import server.StoreItems;
+import server.entities.StoreItems;
 
 public interface StoreItemsDao {
     StoreItems getStoreItems(long chainId, int storeId);
