@@ -1,16 +1,19 @@
 package database;
 
-import server.Item;
-import server.StoreItems;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class StoreItemsDaoPostgres implements StoreItemsDao {
+import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import server.entities.Item;
+import server.entities.StoreItems;
+
+public class StoreItemsDaoPostgres implements StoreItemsDao {
+    private static final Logger log = LoggerFactory.getLogger(StoreItemsDaoPostgres.class);
     private final DataSource ds;
 
     public StoreItemsDaoPostgres(DataSource ds) {
@@ -33,7 +36,7 @@ public class StoreItemsDaoPostgres implements StoreItemsDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
 
         return storeItems;
@@ -62,13 +65,13 @@ public class StoreItemsDaoPostgres implements StoreItemsDao {
             } catch (SQLException e) {
                 db.rollback();
                 e.printStackTrace();
-                System.out.println(e.getMessage());
+                log.error("", e);
             } finally {
                 db.setAutoCommit(true);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
     }
 
@@ -84,15 +87,13 @@ public class StoreItemsDaoPostgres implements StoreItemsDao {
                 rs.getLong("id"));
     }
 
-
     private static final String ADD_PRICE_SQL =
             "INSERT INTO price (item_id, chain_id, store_id, price) VALUES (?, ?, ?, ?)" +
                     "ON CONFLICT (item_id, chain_id, store_id) " +
                     "DO UPDATE " +
-                    "SET price = EXCLUDED.price " +
-                    "WHERE price <> EXCLUDED.price"; // TODO: test performance without condition
+                    "SET price = EXCLUDED.price;";
     private static final String GET_STORE_ITEMS_SQL =
             "SELECT * FROM price " +
                     "JOIN item ON price.item_id = item.id " +
-                    "WHERE chain_id = ? AND store_id = ?";
+                    "WHERE chain_id = ? AND store_id = ?;";
 }

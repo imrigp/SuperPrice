@@ -1,15 +1,16 @@
 package database;
 
-import server.Store;
+import java.util.List;
+import java.util.Map;
 
-import java.util.ArrayList;
+import server.entities.Store;
 
 public interface StoreDao {
-    ArrayList<Store> getChainStores(long chainId);
+    List<Store> getChainStores(long chainId);
 
     Store getStore(long chainId, int storeId);
 
     void addStore(long chainId, Store store);
 
-    void addStores(long chainId, ArrayList<Store> stores);
+    void addStores(long chainId, Map<Integer, Store> stores);
 }

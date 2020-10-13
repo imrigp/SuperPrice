@@ -1,6 +1,6 @@
-package server;
+package server.entities;
 
-public class ItemPrice {
+public class ItemPrice extends Entity {
     private long chainId;
     private int storeId;
     private long itemId;

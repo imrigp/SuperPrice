@@ -1,16 +1,20 @@
 package database;
 
-import server.Store;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import server.entities.Store;
 
 public class StoreDaoPostgres implements StoreDao {
-
+    private static final Logger log = LoggerFactory.getLogger(StoreDaoPostgres.class);
     private final DataSource ds;
 
     public StoreDaoPostgres(DataSource ds) {
@@ -32,7 +36,7 @@ public class StoreDaoPostgres implements StoreDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
 
         return stores;
@@ -54,7 +58,7 @@ public class StoreDaoPostgres implements StoreDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
         return store;
     }
@@ -65,11 +69,11 @@ public class StoreDaoPostgres implements StoreDao {
     }
 
     @Override
-    public void addStores(long chainId, ArrayList<Store> stores) {
+    public void addStores(long chainId, Map<Integer, Store> stores) {
         try (Connection db = ds.getConnection();
              PreparedStatement pst = db.prepareStatement(ADD_STORES_SQL)) {
 
-            for (Store store : stores) {
+            for (Store store : stores.values()) {
                 pst.setInt(1, store.getStoreId());
                 pst.setLong(2, chainId);
                 pst.setString(3, store.getName());
@@ -80,7 +84,7 @@ public class StoreDaoPostgres implements StoreDao {
             }
             pst.executeBatch();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
     }
 
@@ -95,7 +99,7 @@ public class StoreDaoPostgres implements StoreDao {
 
     private static final String ADD_STORES_SQL =
             "INSERT INTO store (id, chain_id, name, address, city, type) " + "VALUES (?, ?, ?, ?, ?, ?) " +
-                    "ON CONFLICT (id) " +
+                    "ON CONFLICT (id, chain_id) " +
                     "DO UPDATE " +
                     "SET name = EXCLUDED.name, address = EXCLUDED.address, " +
                     "city = EXCLUDED.city, type = EXCLUDED.type";

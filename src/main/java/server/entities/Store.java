@@ -1,8 +1,8 @@
-package server;
+package server.entities;
 
 import java.util.ArrayList;
 
-public class Store {
+public class Store extends Entity {
     private int storeId;
     private long chainId;
     private String name;
@@ -73,7 +73,9 @@ public class Store {
     }
 
     public void setType(String type) {
-        this.type = Integer.parseInt(type);
+        if (type != null) {
+            this.type = Integer.parseInt(type);
+        }
     }
 
     public void setType(int type) {

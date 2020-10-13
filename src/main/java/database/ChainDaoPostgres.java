@@ -1,16 +1,19 @@
 package database;
 
-import server.Chain;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class ChainDaoPostgres implements ChainDao {
+import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import server.entities.Chain;
+
+public class ChainDaoPostgres implements ChainDao {
+    private static final Logger log = LoggerFactory.getLogger(ChainDaoPostgres.class);
     private final DataSource ds;
 
     public ChainDaoPostgres(DataSource ds) {
@@ -30,7 +33,7 @@ public class ChainDaoPostgres implements ChainDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
 
         return chains;
@@ -51,7 +54,7 @@ public class ChainDaoPostgres implements ChainDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
         return chain;
     }
@@ -67,7 +70,7 @@ public class ChainDaoPostgres implements ChainDao {
         } catch (
                 SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
     }
 

@@ -1,24 +1,29 @@
-package server;
+package server.Xml;
 
+import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.http.client.methods.CloseableHttpResponse;
+
 public class XmlFile implements Comparable<XmlFile> {
     // List every Type enum value, delimited by '|'
+    // todo find a better way of doing it
     private static final Pattern FILE_NAME_PATTERN = Pattern.compile(
             "^(" + Arrays.stream(Type.values()).map(Type::toString).collect(Collectors.joining("|"))
                     + ")\\d", Pattern.CASE_INSENSITIVE);
     private static final Pattern FILE_DATE_PATTERN = Pattern.compile("-(\\d+)\\.");
 
-
     public enum Type {
-        PRICE("Price"),
+        // The order is important - we want to parse in this order
+        STORES("Stores"),
         PRICEFULL("PriceFull"),
-        PROMO("Promo"),
+        PRICE("Price"),
         PROMOFULL("PromoFull"),
-        STORES("Stores");
+        PROMO("Promo");
 
         private final String label;
 
@@ -32,15 +37,18 @@ public class XmlFile implements Comparable<XmlFile> {
         }
     }
 
-    private String name;
-    private long date;
+    private final String name;
+    private final long fileDate;
     private String xml;
-    private Type type;
-    private boolean poisonPill;
+    private final Type type;
+    private final boolean poisonPill;
+    public CloseableHttpResponse response;
+    private int zIndex;
+    private InputStream inputStream;
 
     private XmlFile() {
         this.name = null;
-        this.date = 0;
+        this.fileDate = 0;
         this.xml = null;
         this.type = null;
         this.poisonPill = true;
@@ -49,10 +57,10 @@ public class XmlFile implements Comparable<XmlFile> {
     public XmlFile(String fname, String xml) {
         this.name = fname;
         this.xml = xml;
-        this.date = getFileDate(fname);
+        this.fileDate = getFileDate(fname);
         this.type = getFileType(fname);
         this.poisonPill = false;
-        if (this.date == -1 || this.type == null) {
+        if (this.fileDate == -1 || this.type == null) {
             throw new IllegalArgumentException("Invalid xml file name:" + fname);
         }
     }
@@ -65,6 +73,14 @@ public class XmlFile implements Comparable<XmlFile> {
         return xml;
     }
 
+    public int getzIndex() {
+        return zIndex;
+    }
+
+    public void setzIndex(int zIndex) {
+        this.zIndex = zIndex;
+    }
+
     public void setXml(String xml) {
         this.xml = xml;
     }
@@ -73,8 +89,8 @@ public class XmlFile implements Comparable<XmlFile> {
         return type;
     }
 
-    public long getDate() {
-        return date;
+    public long getFileDate() {
+        return fileDate;
     }
 
     public boolean isPoisoned() {
@@ -83,6 +99,31 @@ public class XmlFile implements Comparable<XmlFile> {
 
     public static XmlFile createPoison() {
         return new XmlFile();
+    }
+
+    public void setResponse(CloseableHttpResponse response) {
+        this.response = response;
+    }
+
+    public InputStream getInputStream() {
+        /*String ext = FilenameUtils.getExtension(name);
+        if (!ext.equals("xml")) {
+            try {
+                inputStream = new GzipCompressorInputStream(inputStream);
+            } catch (IOException e) {
+                System.out.println("ext: " + ext);
+                e.printStackTrace();
+            }
+        }*/
+        return inputStream;
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    public Optional<InputStream> getResponseInputStream() {
+        return Optional.ofNullable(inputStream);
     }
 
     public static Type getFileType(String fname) {
@@ -106,13 +147,46 @@ public class XmlFile implements Comparable<XmlFile> {
             if (m.find()) {
                 res = Long.parseLong(m.group(1));
             }
-        } catch (NumberFormatException ignored) {} // We just return -1
+        } catch (NumberFormatException ignored) {
+        } // We just return -1
         return res;
     }
 
     @Override
     public int compareTo(XmlFile o) {
-        return Long.compare(this.getDate(), o.getDate());
+        // Compare by file type, then date, then upload date
+        int res = this.getType().compareTo(o.getType());
+        if (res != 0) {
+            return res;
+        }
+
+        res = Long.compare(this.getFileDate(), o.getFileDate());
+        if (res != 0) {
+            return res;
+        }
+
+        return Integer.compare(this.getzIndex(), o.getzIndex());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        XmlFile other = (XmlFile) o;
+
+        if (zIndex != other.zIndex)
+            return false;
+        return name.equals(other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + zIndex;
+        return result;
     }
 
     @Override

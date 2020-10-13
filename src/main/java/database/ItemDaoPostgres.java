@@ -1,17 +1,20 @@
 package database;
 
-
-import server.Item;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import server.entities.Item;
 
 public class ItemDaoPostgres implements ItemDao {
-
+    private static final Logger log = LoggerFactory.getLogger(ItemDaoPostgres.class);
     private final DataSource ds;
 
     public ItemDaoPostgres(DataSource ds) {
@@ -20,6 +23,7 @@ public class ItemDaoPostgres implements ItemDao {
 
     @Override
     public ArrayList<Item> searchItems(String name) {
+        assert false;
         return null;
     }
 
@@ -44,7 +48,7 @@ public class ItemDaoPostgres implements ItemDao {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
 
         return items;
@@ -64,11 +68,12 @@ public class ItemDaoPostgres implements ItemDao {
 
     @Override
     public Item getItem(long id) {
+        assert false;
         return null;
     }
 
     @Override
-    public void addItems(ArrayList<Item> items) {
+    public void addItems(List<Item> items) {
         try (Connection db = ds.getConnection()) {
             try (PreparedStatement pstItem = db.prepareStatement(ADD_ITEM_SQL)) {
                 db.setAutoCommit(false);
@@ -94,13 +99,13 @@ public class ItemDaoPostgres implements ItemDao {
             } catch (SQLException e) {
                 db.rollback();
                 e.printStackTrace();
-                System.out.println(e.getMessage());
+                log.error("", e);
             } finally {
                 db.setAutoCommit(true);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println(e.getMessage());
+            log.error("", e);
         }
     }
 
@@ -118,11 +123,11 @@ public class ItemDaoPostgres implements ItemDao {
                     "quantity, measure_unit, measure_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
                     "ON CONFLICT (id) " +
                     "DO UPDATE " +
-                    "SET name = COALESCE(item.name, EXCLUDED.name), " +
-                    "manufacturer_name = COALESCE(item.manufacturer_name, EXCLUDED.manufacturer_name), " +
-                    "manufacture_country = COALESCE(item.manufacture_country, EXCLUDED.manufacture_country), " +
-                    "unit_quantity = COALESCE(item.unit_quantity, EXCLUDED.unit_quantity), " +
-                    "quantity = COALESCE(NULLIF(item.quantity, 0), EXCLUDED.quantity), " +
-                    "measure_unit = COALESCE(item.measure_unit, EXCLUDED.measure_unit), " +
-                    "measure_price = COALESCE(item.measure_price, EXCLUDED.measure_price)";
+                    "SET name = COALESCE(EXCLUDED.name, item.name), " +
+                    "manufacturer_name = COALESCE(EXCLUDED.manufacturer_name, item.manufacturer_name), " +
+                    "manufacture_country = COALESCE(EXCLUDED.manufacture_country, item.manufacture_country), " +
+                    "unit_quantity = COALESCE(EXCLUDED.unit_quantity, item.unit_quantity), " +
+                    "quantity = COALESCE(EXCLUDED.quantity, NULLIF(item.quantity, 0)), " +
+                    "measure_unit = COALESCE(EXCLUDED.measure_unit, item.measure_unit), " +
+                    "measure_price = COALESCE(EXCLUDED.measure_price, item.measure_price)";
 }

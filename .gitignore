@@ -143,5 +143,6 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/java,windows,intellij
 # Project exclude paths
+/resources/
 /target/
-!/resources/db.properties
+/resources/db.properties

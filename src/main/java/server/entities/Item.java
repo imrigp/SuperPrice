@@ -1,7 +1,6 @@
-package server;
+package server.entities;
 
-
-public class Item {
+public class Item extends Entity {
     private String name;
     private String manufacturerName;
     private String manufactureCountry;
@@ -11,7 +10,6 @@ public class Item {
     private float unitOfMeasurePrice;
     private float price;
     private long id;
-
 
     public Item() {
         this.name = "";
@@ -85,7 +83,7 @@ public class Item {
     }
 
     public String getUnitQty() {
-        return unitQty;
+        return (unitQty == null) ? "unknown" : unitQty;
     }
 
     public void setUnitQty(String unitQty) {
@@ -115,13 +113,17 @@ public class Item {
     }
 
     public void setUnitOfMeasurePrice(String unitOfMeasurePrice) {
-        this.unitOfMeasurePrice = Float.parseFloat(unitOfMeasurePrice);
+        if (unitOfMeasurePrice != null) {
+            this.unitOfMeasurePrice = Float.parseFloat(unitOfMeasurePrice);
+        }
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         Item item = (Item) o;
 

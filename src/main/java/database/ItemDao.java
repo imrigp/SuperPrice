@@ -1,20 +1,19 @@
 package database;
 
-import server.Item;
+import java.util.List;
 
-import java.util.ArrayList;
+import server.entities.Item;
 
 public interface ItemDao {
-    ArrayList<Item> searchItems(String name);
+    List<Item> searchItems(String name);
 
-    ArrayList<Item> getAllItems();
+    List<Item> getAllItems();
 
-    ArrayList<Item> getIncompleteItems();
+    List<Item> getIncompleteItems();
 
     Item getItem(long id);
 
-    void addItems(ArrayList<Item> items);
+    void addItems(List<Item> items);
 
     void updateItem(Item item);
-
 }

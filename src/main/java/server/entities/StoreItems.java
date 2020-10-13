@@ -1,8 +1,8 @@
-package server;
+package server.entities;
 
 import java.util.ArrayList;
 
-public class StoreItems {
+public class StoreItems extends Entity {
     private int storeId;
     private long chainId;
     private ArrayList<Item> items;

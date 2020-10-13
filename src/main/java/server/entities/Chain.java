@@ -1,14 +1,15 @@
-package server;
+package server.entities;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Chain {
+public class Chain extends Entity {
     private long id;
     private String name;
-    private ArrayList<Store> stores;
+    private Map<Integer, Store> stores;
 
     public Chain() {
-        stores = new ArrayList<>();
+        stores = new HashMap<>();
     }
 
     public Chain(long id, String name) {
@@ -18,7 +19,7 @@ public class Chain {
     }
 
     public void addStore(Store store) {
-        stores.add(store);
+        stores.put(store.getStoreId(), store);
     }
 
     public long getId() {
@@ -37,11 +38,11 @@ public class Chain {
         this.name = name;
     }
 
-    public ArrayList<Store> getStores() {
+    public Map<Integer, Store> getStores() {
         return stores;
     }
 
-    public void setStores(ArrayList<Store> stores) {
+    public void setStores(Map<Integer, Store> stores) {
         this.stores = stores;
     }
 

@@ -1,42 +1,45 @@
 package server.plans;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-import server.XmlDownload;
-import server.XmlFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import server.Xml.XmlDownload;
+import server.Xml.XmlFile;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+//todo Add a head request to check connection to speed things up
 
-
-/* todo: Add a head request to check connection to speed things up
-
- * todo: Cerberus allows zipping with: https://url.publishedprices.co.il/file/ajax_download_zip/archive.zip
- * todo: need to pass file names with parameter name "ID" (ID=fname1&ID=fname2...). Test if better (use several threads)
-
- */
+//todo Cerberus allows zipping with: https://url.publishedprices.co.il/file/ajax_download_zip/archive.zip
+// need to pass file names with parameter name "ID" (ID=fname1&ID=fname2...). Test if better (use several threads)
 
 public class CerberusPlan extends Plan {
+    private static final Logger log = LoggerFactory.getLogger(CerberusPlan.class);
     private static final String HANDSHAKE_URL = "https://url.publishedprices.co.il";
     private static final String LOGIN_URL = "https://url.publishedprices.co.il/login/user";
     private static final String FILES_URL = "https://url.publishedprices.co.il/file/ajax_dir";
     private static final String BASE_FILE_URL = "https://url.publishedprices.co.il/file/d/";
 
-
     private final String username;
 
+    public CerberusPlan(String name, String username) {
+        super(name);
+        this.username = username;
+    }
+
     public CerberusPlan(String username) {
+        super(username);
         this.username = username;
     }
 
@@ -44,7 +47,7 @@ public class CerberusPlan extends Plan {
         HttpGet req = new HttpGet(HANDSHAKE_URL);
         try (CloseableHttpResponse response = getClient().execute(req)) {
             if (response.getStatusLine().getStatusCode() != 200) {
-                System.out.println(response.getStatusLine());
+                log.error("connection error: {}", response.getStatusLine());
                 return false;
             }
         } catch (IOException e) {
@@ -83,63 +86,57 @@ public class CerberusPlan extends Plan {
     }
 
     // Returns a list of files added after our last updated date, ordered by ascending date
-    protected ArrayList<XmlDownload> getSortedFileList() {
+    protected List<XmlDownload> getSortedFileList(long fromTime) {
         HttpPost ajax = getHttpPost();
-        String jsonRes;
         JsonNode arrayNode;
+
         try (CloseableHttpResponse res = getClient().execute(ajax)) {
             if (res.getStatusLine().getStatusCode() != 200) {
-                System.out.println("CerberusPlan.ScanForFiles: " + res.getStatusLine());
                 // reconnect and try again
                 if (connect()) {
-                    return getSortedFileList();
+                    return getSortedFileList(fromTime);
                 } else {
+                    System.err.println("ERROR in connection");
                     return null;
                 }
             }
-            jsonRes = IOUtils.toString(res.getEntity().getContent(), StandardCharsets.UTF_8);
+
             // Convert json response string to map
             ObjectMapper objectMapper = new ObjectMapper();
-            arrayNode = objectMapper.readTree(jsonRes);
+            arrayNode = objectMapper.readTree(res.getEntity().getContent());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
         // Files reside under this node, make sure it's an array
         JsonNode arr = arrayNode.get("aaData");
-        if (!arr.isArray()) {
-            System.err.println("aaData is not an array in response:\n" + jsonRes);
-            return null;
-        }
+        assert arr.isArray() : "aaData is not an array in response:\n" + ajax.getURI();
+
         // Create a list containing new files to process
-        ArrayList<XmlDownload> xmlList = new ArrayList<>(arr.size());
-        xmlList.add(XmlDownload.createSentinel());
-        XmlDownload storeFile = null;
+        List<XmlDownload> xmlList = new ArrayList<>(arr.size());
+        int zIndex = 0;
         for (JsonNode jsonNode : arr) {
             String fname = jsonNode.get("fname").textValue();
             XmlFile xmlFile;
             try {
                 xmlFile = new XmlFile(fname);
             } catch (IllegalArgumentException e) {
+                log.error("", e);
                 continue; // Not valid xml file name
             }
-            // Don't include files we already processed
-            if (xmlFile.getDate() < lastUpdated) {
+
+            // Don't include old files, but always include stores
+            if (xmlFile.getFileDate() < fromTime && xmlFile.getType() != XmlFile.Type.STORES) {
                 continue;
             }
 
             String url = BASE_FILE_URL + fname;
-            // We want the stores file to be the first, so we add it after the sorting
-            if (xmlFile.getType() == XmlFile.Type.STORES) {
-                storeFile = new XmlDownload(getClient(), url, xmlFile);
-            } else {
-                xmlList.add(new XmlDownload(getClient(), url, xmlFile));
-            }
+            xmlFile.setzIndex(zIndex++);
+            xmlList.add(new XmlDownload(getClient(), url, xmlFile, this::addDownload));
         }
-        // Sort the list (by date), then add the store file to be the first
+
         Collections.sort(xmlList);
-        xmlList.set(0, storeFile);
-        return xmlList;
+        return xmlList.subList(0, xmlList.size());
     }
 
     private HttpPost getHttpPost() {
@@ -150,7 +147,7 @@ public class CerberusPlan extends Plan {
         params.add(new BasicNameValuePair("iDisplayStart", "0"));
         params.add(new BasicNameValuePair("iDisplayLength", "100000"));
         params.add(new BasicNameValuePair("iSortCol_0", "3")); // date column
-        params.add(new BasicNameValuePair("sSortDir_0", "desc"));
+        params.add(new BasicNameValuePair("sSortDir_0", "asc"));
         params.add(new BasicNameValuePair("iSortingCols", "1"));
         try {
             ajax.setEntity(new UrlEncodedFormEntity(params));
