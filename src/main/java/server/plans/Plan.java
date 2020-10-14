@@ -29,8 +29,8 @@ public abstract class Plan {
     private static final Set<XmlFile.Type> SUPPORTED_FILES =
             Collections.unmodifiableSet(EnumSet.of(STORES, PRICEFULL, PRICE));
 
+    protected final String name;
     private CloseableHttpClient client;
-    private final String name;
     private BlockingQueue<XmlDownload> downloadQueue;
     private final Set<XmlDownload> readyDownloads;
     private Consumer<XmlFile> xmlConsumer;
@@ -100,6 +100,7 @@ public abstract class Plan {
         // We want to parse the files sequentially, so we wait for each file in order
         for (XmlDownload xmlDownload : downloadList) {
             log.info("{}: waiting for {}", name, xmlDownload);
+
             synchronized (readyDownloads) {
                 while (!readyDownloads.contains(xmlDownload)) {
                     try {

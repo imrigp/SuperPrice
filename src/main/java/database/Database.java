@@ -117,14 +117,18 @@ public final class Database {
             final ArrayList<String> tableCreateList = new ArrayList<>(
                     List.of(createChain, createStore, createItem, createPrice, createUnknownMeasure, createParsedFiles));
             for (String createSql : tableCreateList) {
-                st.execute(createSql);
+                try {
+                    st.execute(createSql);
+                } catch (SQLException e) {
+                    throw new SQLException("Error in query: " + createSql, e);
+                }
             }
 
             // Add the z_min_update trigger to these tables
             final List<String> triggerList = new ArrayList<>(List.of("item", "price", "store", "chain", "parsed_files"));
             final String triggerTemplate = "DROP TRIGGER IF EXISTS z_min_update ON %s;"
-                    + " CREATE TRIGGER %s"
-                    + " BEFORE UPDATE ON item"
+                    + " CREATE TRIGGER z_min_update"
+                    + " BEFORE UPDATE ON %s"
                     + " FOR EACH ROW EXECUTE PROCEDURE suppress_redundant_updates_trigger();";
 
             for (String tableName : triggerList) {

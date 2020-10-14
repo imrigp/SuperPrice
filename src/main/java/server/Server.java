@@ -17,9 +17,8 @@ import org.slf4j.LoggerFactory;
 import server.Xml.XmlFile;
 import server.Xml.XmlParser;
 import server.entities.Item;
-import server.plans.CerberusPlan;
 import server.plans.Plan;
-import server.plans.ShufersalPlan;
+import server.plans.YinotBitanPlan;
 
 public class Server {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
@@ -36,7 +35,7 @@ public class Server {
         initDb();
 
         state = State.getInstance();
-        state.clearState();
+        //state.clearState();
 
         entityConsumer = new EntityConsumer(state);
         parser = new XmlParser(entityConsumer);
@@ -54,8 +53,8 @@ public class Server {
 
     private void initDb() {
         try {
-            Database.createTables(true);
-            db.clearTables();
+            Database.createTables(false);
+            //db.clearTables();
         } catch (SQLException e) {
             log.error("Error while creating tables: ", e);
         }
@@ -63,11 +62,12 @@ public class Server {
 
     private void initPlans() {
         List<Plan> plans = Arrays.asList(
-                new CerberusPlan("tivtaam"),
+                /*new CerberusPlan("tivtaam"),
                 new CerberusPlan("yohananof"),
                 new CerberusPlan("RamiLevi"),
                 new CerberusPlan("freshmarket"),
-                new ShufersalPlan("Shufersal")
+                new ShufersalPlan("Shufersal"),*/
+                new YinotBitanPlan("YinotBitan")
         );
 
         try {

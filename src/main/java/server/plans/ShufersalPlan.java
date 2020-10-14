@@ -37,7 +37,8 @@ public class ShufersalPlan extends Plan {
         // get stores file first
         try (CloseableHttpResponse res = getClient().execute(ajax)) {
             if (res.getStatusLine().getStatusCode() != 200) {
-                System.out.println("Shufersal request failed:" + res.getStatusLine().getStatusCode());
+                System.out.println(name + " request failed:" + res.getStatusLine().getStatusCode());
+                return xmlList;
             }
             htmlRes = IOUtils.toString(res.getEntity().getContent(), StandardCharsets.UTF_8);
 
@@ -75,7 +76,8 @@ public class ShufersalPlan extends Plan {
                 HttpGet ajax = new HttpGet(url + page++);
                 try (CloseableHttpResponse res = getClient().execute(ajax)) {
                     if (res.getStatusLine().getStatusCode() != 200) {
-                        System.out.println("Shufersal request failed:" + res.getStatusLine().getStatusCode());
+                        System.out.println(name + " request failed:" + res.getStatusLine().getStatusCode());
+                        return;
                     }
 
                     String htmlRes = IOUtils.toString(res.getEntity().getContent(), StandardCharsets.UTF_8);
@@ -115,7 +117,8 @@ public class ShufersalPlan extends Plan {
             HttpGet ajax = new HttpGet(PRICEFULL_FILES_URL + "&page=" + page++);
             try (CloseableHttpResponse res = getClient().execute(ajax)) {
                 if (res.getStatusLine().getStatusCode() != 200) {
-                    System.out.println("Shufersal request failed:" + res.getStatusLine().getStatusCode());
+                    System.out.println(name + " request failed:" + res.getStatusLine().getStatusCode());
+                    return;
                 }
                 String htmlRes = IOUtils.toString(res.getEntity().getContent(), StandardCharsets.UTF_8);
                 if (!htmlRes.contains("page=" + page)) {
@@ -132,7 +135,7 @@ public class ShufersalPlan extends Plan {
                         stop = true;
                         break;
                     }
-                    file.setzIndex(zIndex);
+                    file.setzIndex(zIndex++);
                     xmlList.add(new XmlDownload(getClient(), m.group("url"), file, this::addDownload));
                 }
             } catch (IOException e) {

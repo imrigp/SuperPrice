@@ -11,7 +11,7 @@ import org.quartz.SchedulerException;
 public class Tester {
 
     // TODO: 14/10/2020 Create daily task to delete old visited files
-    // TODO: 14/10/2020 Change Consumers to CompletableFutures
+    // TODO: 14/10/2020 Pre-compile necessary regex
 
     public static void main(final String[] args) throws SQLException, IOException, XMLStreamException, InterruptedException, SchedulerException {
 
