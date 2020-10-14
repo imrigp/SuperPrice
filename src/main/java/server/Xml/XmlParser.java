@@ -156,10 +156,9 @@ public final class XmlParser {
                                 case "itemprice" -> item.setPrice(getElementText(parser));
                                 case "manufacturername" -> item.setManufacturerName(getElementText(parser));
                                 case "manufacturecountry" -> item.setManufactureCountry(getElementText(parser));
-                                case "unitqty" -> item.setUnitQty(getElementText(parser));
-                                case "quantity" -> item.setQty(getElementText(parser));
+                                case "unitqty" -> item.setQuantityUnit(getElementText(parser));
+                                case "quantity" -> item.setQuantity(getElementText(parser));
                                 case "unitOfmeasure" -> item.setUnitOfMeasure(getElementText(parser));
-                                case "unitofmeasureprice" -> item.setUnitOfMeasurePrice(getElementText(parser));
                             }
                         }
                         storeItems.addItem(item);

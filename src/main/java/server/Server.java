@@ -33,13 +33,17 @@ public class Server {
 
     public Server() throws SchedulerException {
         db = DbQuery.getInstance();
+        initDb();
+
         state = State.getInstance();
+        state.clearState();
+
         entityConsumer = new EntityConsumer(state);
         parser = new XmlParser(entityConsumer);
         Consumer<XmlFile> xmlConsumer = parser::parseXmlFile;
 
         manager = new PlanManager(xmlConsumer, DOWNLOAD_THREADS);
-        initDb();
+
         initPlans();
 
         Map<Long, Item> inc = state.getIncompleteDbItems();
@@ -50,11 +54,10 @@ public class Server {
 
     private void initDb() {
         try {
-            Database.createTables(false);
-            //db.clearTables();
-            //state.clearState();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            Database.createTables(true);
+            db.clearTables();
+        } catch (SQLException e) {
+            log.error("Error while creating tables: ", e);
         }
     }
 

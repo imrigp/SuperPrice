@@ -19,6 +19,7 @@ public class ItemDirty extends Item {
         super();
     }
 
+
     @Override
     public void setName(String name) {
         Matcher matcher = EXTRACT_UNIT_PATTERN.matcher(name);
@@ -26,8 +27,8 @@ public class ItemDirty extends Item {
         if (matcher.find()) {
             name = Stream.of(matcher.group(1), matcher.group(4))
                          .filter(Objects::nonNull).collect(Collectors.joining());
-            setQty(matcher.group(2));
-            setUnitQty(matcher.group(3));
+            setQuantity(matcher.group(2));
+            setQuantityUnit(matcher.group(3));
         }
 
         name = name.trim();
@@ -39,9 +40,10 @@ public class ItemDirty extends Item {
         super.setName(name);
     }
 
-    private String determineUnit(String unit) {
+    private QuantityUnit determineUnit(String unit) {
         Matcher matcher = EXTRACT_MEASURE_PATTERN.matcher(unit);
 
+        // Sometimes they put the quantity in the unit field, so try to separate them
         if (matcher.find()) {
             String u = matcher.group(1) == null ? matcher.group(4) : matcher.group(1);
             String quantity = matcher.group(2) == null ? matcher.group(3) : matcher.group(2);
@@ -49,30 +51,19 @@ public class ItemDirty extends Item {
                 unit = u;
             }
             if (quantity != null) {
-                if (getQty() == 0) {
-                    setUnitQty(quantity);
+                if (getQuantity() == 0) {
+                    setQuantity(quantity);
                 }
             }
         }
 
-        String newUnit;
-        // Switch cases are implemented as hash maps under the hood, so this should be quite efficient
-        // todo: Change to Enum!!
-        switch (unit) {
-            case "גרם", "גרמים", "גר", "ג", "ג'", "ג`", "גר'", "גר`" -> newUnit = "gram";
-            case "ליטר", "ליטרים", "ל", "ל'", "ל`" -> newUnit = "liter";
-            case "קילו", "קילוגרם", "קילוגרמים", "קג", "ק", "ק\"ג", "ק'", "ק'ג", "ק`", "ק`ג", "לקג" -> newUnit = "kg";
-            case "מיליליטר", "מיליליטרים", "מל", "מ\"ל", "מ", "מ'ל", "מ`ל" -> newUnit = "ml";
-            case "לא ידוע", "Unknown", "לא מוגדר", "ק``ג\\גרם", "ליטר\\מ``ל" -> newUnit = null;
-            case "מטר", "מטרים" -> newUnit = "meter";
-            case "סמ", "ס\"מ", "סנטימטר" -> newUnit = "cm";
-            case "יחידה", "יח'", "יח`", "יח", "יחי", "יחידו" -> newUnit = "unit";
-            default -> {
-                newUnit = null;
-                Utils.addMeasure(unit);
-            }
+        QuantityUnit quantityUnit = QuantityUnit.fromString(unit);
+        if (quantityUnit == QuantityUnit.UNKNOWN) {
+            // Add to unknown units list so we can maintain the supported units
+            Utils.addMeasure(unit);
         }
-        return newUnit;
+
+        return quantityUnit;
     }
 
     @Override
@@ -96,26 +87,21 @@ public class ItemDirty extends Item {
     }
 
     @Override
-    public void setUnitQty(String unitQty) {
-        if (getUnitQty().isEmpty()) {
-            super.setUnitQty(determineUnit(unitQty));
+    public void setQuantityUnit(String quantityUnit) {
+        if (getQuantityUnit() == QuantityUnit.UNKNOWN) {
+            super.setQuantityUnit(determineUnit(quantityUnit));
         }
     }
 
     @Override
-    public void setQty(String qty) {
-        if (getQty() == 0) {
-            super.setQty(qty);
+    public void setQuantity(String quantity) {
+        if (getQuantity() == 0) {
+            super.setQuantity(quantity);
         }
     }
 
     @Override
     public void setUnitOfMeasure(String unitOfMeasure) {
         super.setUnitOfMeasure(unitOfMeasure);
-    }
-
-    @Override
-    public void setUnitOfMeasurePrice(String unitOfMeasurePrice) {
-        super.setUnitOfMeasurePrice(unitOfMeasurePrice);
     }
 }

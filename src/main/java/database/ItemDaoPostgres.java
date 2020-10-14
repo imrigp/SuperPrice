@@ -61,7 +61,6 @@ public class ItemDaoPostgres implements ItemDao {
                 rs.getString("unit_quantity"),
                 rs.getFloat("quantity"),
                 rs.getString("measure_unit"),
-                rs.getFloat("measure_price"),
                 -1, // Not needed
                 rs.getLong("id"));
     }
@@ -84,10 +83,9 @@ public class ItemDaoPostgres implements ItemDao {
                     pstItem.setString(2, item.getName());
                     pstItem.setString(3, item.getManufacturerName());
                     pstItem.setString(4, item.getManufactureCountry());
-                    pstItem.setString(5, item.getUnitQty());
-                    pstItem.setFloat(6, item.getQty());
+                    pstItem.setString(5, item.getQuantityUnit().toString());
+                    pstItem.setFloat(6, item.getQuantity());
                     pstItem.setString(7, item.getUnitOfMeasure());
-                    pstItem.setFloat(8, item.getUnitOfMeasurePrice());
                     pstItem.addBatch();
 
                     if (++count % batchSize == 0) {
@@ -120,7 +118,7 @@ public class ItemDaoPostgres implements ItemDao {
                     "OR unit_quantity = 'unknown' OR quantity = 0";
     private static final String ADD_ITEM_SQL =
             "INSERT INTO item (id, name, manufacturer_name, manufacture_country, unit_quantity, " +
-                    "quantity, measure_unit, measure_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?) " +
+                    "quantity, measure_unit) VALUES (?, ?, ?, ?, ?, ?, ?) " +
                     "ON CONFLICT (id) " +
                     "DO UPDATE " +
                     "SET name = COALESCE(EXCLUDED.name, item.name), " +
@@ -128,6 +126,5 @@ public class ItemDaoPostgres implements ItemDao {
                     "manufacture_country = COALESCE(EXCLUDED.manufacture_country, item.manufacture_country), " +
                     "unit_quantity = COALESCE(EXCLUDED.unit_quantity, item.unit_quantity), " +
                     "quantity = COALESCE(EXCLUDED.quantity, NULLIF(item.quantity, 0)), " +
-                    "measure_unit = COALESCE(EXCLUDED.measure_unit, item.measure_unit), " +
-                    "measure_price = COALESCE(EXCLUDED.measure_price, item.measure_price)";
+                    "measure_unit = COALESCE(EXCLUDED.measure_unit, item.measure_unit);";
 }

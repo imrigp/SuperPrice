@@ -82,7 +82,6 @@ public class StoreItemsDaoPostgres implements StoreItemsDao {
                 rs.getString("unit_quantity"),
                 rs.getFloat("quantity"),
                 rs.getString("measure_unit"),
-                rs.getFloat("measure_price"),
                 rs.getFloat("price"),
                 rs.getLong("id"));
     }

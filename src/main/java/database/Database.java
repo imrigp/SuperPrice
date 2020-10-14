@@ -12,9 +12,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -22,6 +25,7 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import server.entities.Item;
 
 public final class Database {
     private static final Logger log = LoggerFactory.getLogger(Database.class);
@@ -54,6 +58,10 @@ public final class Database {
     }
 
     public static void createTables(boolean override) throws SQLException {
+        final String unitQuantityStr = Arrays.stream(Item.QuantityUnit.values())
+                                             .map(Objects::toString)
+                                             .collect(Collectors.joining("','", "'", "'"));
+
         try (Connection db = getDataSource().getConnection();
              Statement st = db.createStatement()) {
 
@@ -82,17 +90,18 @@ public final class Database {
                     + " PRIMARY KEY (id, chain_id)"
                     + ")");
 
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS item("
+            final String sql = "CREATE TABLE IF NOT EXISTS item("
                     + " id BIGINT,"
                     + " name VARCHAR(50),"
                     + " manufacturer_name VARCHAR(50),"
                     + " manufacture_country VARCHAR(20),"
-                    + " unit_quantity VARCHAR(10),"
+                    + " unit_quantity VARCHAR(10) CHECK (unit_quantity IN (" + unitQuantityStr + ")),"
                     + " quantity REAL,"
                     + " measure_unit VARCHAR(10),"
-                    + " measure_price REAL,"
                     + " PRIMARY KEY (id)"
-                    + ")");
+                    + ")";
+
+            st.executeUpdate(sql);
 
             st.executeUpdate("CREATE TABLE IF NOT EXISTS price("
                     + " item_id BIGINT REFERENCES item(id),"
