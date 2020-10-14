@@ -58,10 +58,6 @@ public final class Database {
     }
 
     public static void createTables(boolean override) throws SQLException {
-        final String unitQuantityStr = Arrays.stream(Item.QuantityUnit.values())
-                                             .map(Objects::toString)
-                                             .collect(Collectors.joining("','", "'", "'"));
-
         try (Connection db = getDataSource().getConnection();
              Statement st = db.createStatement()) {
 
@@ -74,13 +70,12 @@ public final class Database {
                 st.executeUpdate("DROP TABLE IF EXISTS unknown_measure");
             }
 
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS chain("
+            final String createChain = "CREATE TABLE IF NOT EXISTS chain("
                     + " id BIGINT,"
                     + " name VARCHAR(30),"
                     + " PRIMARY KEY (id)"
-                    + ")");
-
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS store("
+                    + ")";
+            final String createStore = "CREATE TABLE IF NOT EXISTS store("
                     + " id INTEGER,"
                     + " chain_id BIGINT REFERENCES chain(id),"
                     + " name VARCHAR(50),"
@@ -88,9 +83,11 @@ public final class Database {
                     + " city VARCHAR(20),"
                     + " type INT,"
                     + " PRIMARY KEY (id, chain_id)"
-                    + ")");
-
-            final String sql = "CREATE TABLE IF NOT EXISTS item("
+                    + ")";
+            final String unitQuantityStr = Arrays.stream(Item.QuantityUnit.values())
+                                                 .map(Objects::toString)
+                                                 .collect(Collectors.joining("','", "'", "'"));
+            final String createItem = "CREATE TABLE IF NOT EXISTS item("
                     + " id BIGINT,"
                     + " name VARCHAR(50),"
                     + " manufacturer_name VARCHAR(50),"
@@ -100,48 +97,39 @@ public final class Database {
                     + " measure_unit VARCHAR(10),"
                     + " PRIMARY KEY (id)"
                     + ")";
-
-            st.executeUpdate(sql);
-
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS price("
+            final String createPrice = "CREATE TABLE IF NOT EXISTS price("
                     + " item_id BIGINT REFERENCES item(id),"
                     + " chain_id BIGINT,"
                     + " store_id INTEGER,"
                     + " price REAL,"
                     + " PRIMARY KEY (item_id, chain_id, store_id),"
                     + " FOREIGN KEY (store_id, chain_id) REFERENCES store (id, chain_id)"
-                    + ")");
-
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS unknown_measure("
+                    + ")";
+            final String createUnknownMeasure = "CREATE TABLE IF NOT EXISTS unknown_measure("
                     + " name VARCHAR(20),"
                     + " PRIMARY KEY (name)"
-                    + ")");
-
-            st.executeUpdate("CREATE TABLE IF NOT EXISTS parsed_files("
+                    + ")";
+            final String createParsedFiles = "CREATE TABLE IF NOT EXISTS parsed_files("
                     + " name VARCHAR(50),"
                     + " PRIMARY KEY (name)"
-                    + ")");
+                    + ")";
 
-            st.executeUpdate("DROP TRIGGER IF EXISTS z_min_update ON item;"
-                    + " CREATE TRIGGER z_min_update"
+            final ArrayList<String> tableCreateList = new ArrayList<>(
+                    List.of(createChain, createStore, createItem, createPrice, createUnknownMeasure, createParsedFiles));
+            for (String createSql : tableCreateList) {
+                st.execute(createSql);
+            }
+
+            // Add the z_min_update trigger to these tables
+            final List<String> triggerList = new ArrayList<>(List.of("item", "price", "store", "chain", "parsed_files"));
+            final String triggerTemplate = "DROP TRIGGER IF EXISTS z_min_update ON %s;"
+                    + " CREATE TRIGGER %s"
                     + " BEFORE UPDATE ON item"
-                    + " FOR EACH ROW EXECUTE PROCEDURE suppress_redundant_updates_trigger();");
-            st.executeUpdate("DROP TRIGGER IF EXISTS z_min_update ON price;"
-                    + " CREATE TRIGGER z_min_update"
-                    + " BEFORE UPDATE ON price"
-                    + " FOR EACH ROW EXECUTE PROCEDURE suppress_redundant_updates_trigger();");
-            st.executeUpdate("DROP TRIGGER IF EXISTS z_min_update ON store;"
-                    + " CREATE TRIGGER z_min_update"
-                    + " BEFORE UPDATE ON store"
-                    + " FOR EACH ROW EXECUTE PROCEDURE suppress_redundant_updates_trigger();");
-            st.executeUpdate("DROP TRIGGER IF EXISTS z_min_update ON chain;"
-                    + " CREATE TRIGGER z_min_update"
-                    + " BEFORE UPDATE ON chain"
-                    + " FOR EACH ROW EXECUTE PROCEDURE suppress_redundant_updates_trigger();");
-            st.executeUpdate("DROP TRIGGER IF EXISTS z_min_update ON parsed_files;"
-                    + " CREATE TRIGGER z_min_update"
-                    + " BEFORE UPDATE ON parsed_files"
-                    + " FOR EACH ROW EXECUTE PROCEDURE suppress_redundant_updates_trigger();");
+                    + " FOR EACH ROW EXECUTE PROCEDURE suppress_redundant_updates_trigger();";
+
+            for (String tableName : triggerList) {
+                st.execute(String.format(triggerTemplate, tableName, tableName));
+            }
         }
     }
 
