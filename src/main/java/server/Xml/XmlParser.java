@@ -16,7 +16,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.State;
+import server.DatabaseState;
 import server.entities.Chain;
 import server.entities.Entity;
 import server.entities.Item;
@@ -44,7 +44,7 @@ public final class XmlParser {
 
     public void parseXmlFile(final XmlFile xmlFile) {
         parseExecutor.execute(() -> parseDispatcher(xmlFile).ifPresent(entity -> {
-            State.getInstance().addParsedFile(xmlFile.toString());
+            DatabaseState.getInstance().addParsedFile(xmlFile.toString());
             entityConsumer.accept(entity);
             log.info("Parsed: {}", xmlFile);
         }));

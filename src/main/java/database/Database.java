@@ -29,8 +29,7 @@ import server.entities.Item;
 
 public final class Database {
     private static final Logger log = LoggerFactory.getLogger(Database.class);
-    private static final HikariConfig CONFIG = new HikariConfig();
-    public static final int MAX_POOL_SIZE = 10;
+
     private static DataSource ds;
 
     private Database() {
@@ -42,18 +41,8 @@ public final class Database {
             return ds;
         }
         Properties props = readProperties("resources\\db.properties");
-
-        CONFIG.setJdbcUrl(props.getProperty("url"));
-        CONFIG.setUsername(props.getProperty("user"));
-        CONFIG.setPassword(props.getProperty("password"));
-
-        CONFIG.setMaximumPoolSize(MAX_POOL_SIZE);
-        CONFIG.setAutoCommit(true);
-        CONFIG.addDataSourceProperty("cachePrepStmts", "true");
-        CONFIG.addDataSourceProperty("prepStmtCacheSize", "250");
-        CONFIG.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-
-        ds = new HikariDataSource(CONFIG);
+        HikariConfig config = new HikariConfig(props);
+        ds = new HikariDataSource(config);
         return ds;
     }
 

@@ -12,9 +12,9 @@ import server.entities.Store;
 import server.entities.StoreItems;
 
 public class EntityConsumer implements Consumer<Entity> {
-    State state;
+    DatabaseState state;
 
-    public EntityConsumer(State state) {
+    public EntityConsumer(DatabaseState state) {
         this.state = state;
     }
 

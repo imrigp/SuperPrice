@@ -15,9 +15,9 @@ import server.entities.Chain;
 import server.entities.Item;
 import server.entities.StoreItems;
 
-public final class State {
+public final class DatabaseState {
 
-    private static State instance;
+    private static DatabaseState instance;
 
     private final DbQuery db = DbQuery.getInstance();
 
@@ -26,7 +26,7 @@ public final class State {
     private final Map<Long, Item> allDbItems;
     private final Set<String> parsedFiles;
 
-    private State() {
+    private DatabaseState() {
         if (instance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         }
@@ -48,9 +48,9 @@ public final class State {
                   .collect(Collectors.toConcurrentMap(Item::getId, Function.identity()));
     }
 
-    public static State getInstance() {
+    public static DatabaseState getInstance() {
         if (instance == null) {
-            instance = new State();
+            instance = new DatabaseState();
         }
         return instance;
     }

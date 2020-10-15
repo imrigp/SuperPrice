@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import server.DatabaseState;
 import server.HttpClientPool;
-import server.State;
 import server.Xml.XmlDownload;
 import server.Xml.XmlFile;
 import utils.Utils;
@@ -34,11 +34,11 @@ public abstract class Plan {
     private BlockingQueue<XmlDownload> downloadQueue;
     private final Set<XmlDownload> readyDownloads;
     private Consumer<XmlFile> xmlConsumer;
-    private final State state;
+    private final DatabaseState state;
 
     protected Plan(String name) {
         this.name = name;
-        this.state = State.getInstance();
+        this.state = DatabaseState.getInstance();
         this.readyDownloads = ConcurrentHashMap.newKeySet();
     }
 

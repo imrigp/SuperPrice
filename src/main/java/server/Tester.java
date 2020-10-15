@@ -2,6 +2,8 @@ package server;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.stream.XMLStreamException;
@@ -30,9 +32,20 @@ public class Tester {
         HttpClientPool.shutdown();
     }
 
-    private static void test() {
+    private static Object[] test(Object[] songs) {
+        int newLen = ThreadLocalRandom.current().nextInt(0, songs.length + 1);
 
+        for (int i = 0; i < newLen; i++) {
+            int ind = ThreadLocalRandom.current().nextInt(i, songs.length);
+            swap(songs, i, ind);
+        }
 
-        System.exit(4);
+        return Arrays.copyOf(songs, newLen);
+    }
+
+    private static void swap(Object[] arr, int i, int j) {
+        Object tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
     }
 }
