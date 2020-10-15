@@ -79,7 +79,6 @@ public abstract class Plan {
     }
 
     public void scanForFiles() {
-
         // Give 2 hour grace, the pricefull file should be updated every 24 hours
         long fromTime = Utils.convertUnixTo24H(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(26));
         List<XmlDownload> list = getSortedFileList(fromTime);

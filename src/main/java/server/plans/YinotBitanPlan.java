@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +29,7 @@ public class YinotBitanPlan extends Plan {
     @Override
     protected List<XmlDownload> getSortedFileList(long fromTime) {
         final List<XmlDownload> xmlList = new ArrayList<>();
+        final LinkedHashSet<XmlDownload> xmlSet = new LinkedHashSet<>();
 
         String date = getNowDateFormat();
         String url = String.format(ALL_FILES_URL, date);
@@ -55,13 +57,14 @@ public class YinotBitanPlan extends Plan {
                 }
                 String fileUrl = urlTemplate + fname;
                 file.setzIndex(zIndex++);
-                xmlList.add(new XmlDownload(getClient(), fileUrl, file, this::addDownload));
+                xmlSet.add(new XmlDownload(getClient(), fileUrl, file, this::addDownload));
             }
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
 
+        xmlList.addAll(xmlSet);
         Collections.sort(xmlList);
         return xmlList;
     }
