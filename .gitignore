@@ -145,5 +145,6 @@ $RECYCLE.BIN/
 # Project exclude paths
 /resources/
 /target/
-/resources/db.properties
+/db.properties
 /prices.iml
+/p.html
