@@ -1,19 +1,37 @@
-# Prices
+# SuperPrice
 
-Parse and store Israeli supermarket chain stores' prices.  
-The law obligates all large supermarket chains to publish the price (including promos) of every item in each of their stores.  
-Although there is a uniform format they should follow, they don't fully comply it it so measures need to be taken in order to collect the data uniformly.  
-Furthermore, each chain publishes the data on their own website, which requires special parsing for every chain.
+A Java RESTful web service which provides real-time data about supermarket chains, stores, items, prices, and (soon) discounts.   
+  
+## Production
 
-# Goal
+I set up a production server:  
+http://api.imri.ga  
+I'm working on a website which utilizes the API to demonstrate the possibilities, but for now you could explore and test the API in the OpenApi page [here](http://api.imri.ga/ui).   
+![image](https://user-images.githubusercontent.com/57985724/97604988-c7493b00-1a16-11eb-8474-ecc54d21c6b9.png)
 
-Build a robust server which crawls all chain websites periodically to find new updates and update all data to database.  
+## Background
+
+The law ("שקיפות מחירים") obligates all large supermarket chains in Israel to publish the price (including discounts) of every item in each of their stores.  
+Although there is a uniform format they should follow, they don't fully comply it, so measures need to be taken in order to collect the data uniformly.  
+Furthermore, each chain publishes the data on their own website, which requires special parsing plan for every chain.
+
+
+## Goal
+
+Develop a robust server which crawls all chains' websites periodically to find new updates and store them in a database.  
 Maintain a uniform database while handling conflicting data introduced by different chains.  
-Due to the large number of chain stores, concurrency is used to render the crawling efficient.  
+Then, expose a user-friendly API to query meaningful data. 
 
-# Future
+## Ideas
 
-Build REST API to query the database in meaningful ways:
+The API could be used for interesting purposes:
 - Search for specific items in specific stores (geographically filtered)
-- Build a desired shopping cart and check which store provides the best overall price, including discounts
+- Build a shopping cart and check which store provides the best overall price, including discounts
 - Track price history
+
+## Future
+
+- I intend to replace the somewhat naive item search function with Apache Solr. 
+Although the search itself is quite efficient right now (using compressed suffix tree), it lacks ranked searching, highlighting and fuzzy matching.  
+- I'm currently working on a website which will show the API capabilities.  
+

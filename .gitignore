@@ -7,27 +7,27 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/usage.statistics.xml
-.idea/**/dictionaries
-.idea/**/shelf
+super-price-api/.idea/**/workspace.xml
+super-price-api/.idea/**/tasks.xml
+super-price-api/.idea/**/usage.statistics.xml
+super-price-api/.idea/**/dictionaries
+super-price-api/.idea/**/shelf
 
 # Generated files
-.idea/**/contentModel.xml
+super-price-api/.idea/**/contentModel.xml
 
 # Sensitive or high-churn files
-.idea/**/dataSources/
-.idea/**/dataSources.ids
-.idea/**/dataSources.local.xml
-.idea/**/sqlDataSources.xml
-.idea/**/dynamic.xml
-.idea/**/uiDesigner.xml
-.idea/**/dbnavigator.xml
+super-price-api/.idea/**/dataSources/
+super-price-api/.idea/**/dataSources.ids
+super-price-api/.idea/**/dataSources.local.xml
+super-price-api/.idea/**/sqlDataSources.xml
+super-price-api/.idea/**/dynamic.xml
+super-price-api/.idea/**/uiDesigner.xml
+super-price-api/.idea/**/dbnavigator.xml
 
 # Gradle
-.idea/**/gradle.xml
-.idea/**/libraries
+super-price-api/.idea/**/gradle.xml
+super-price-api/.idea/**/libraries
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
@@ -43,7 +43,7 @@
 cmake-build-*/
 
 # Mongo Explorer plugin
-.idea/**/mongoSettings.xml
+super-price-api/.idea/**/mongoSettings.xml
 
 # File-based project format
 *.iws
@@ -58,7 +58,7 @@ out/
 atlassian-ide-plugin.xml
 
 # Cursive Clojure plugin
-.idea/replstate.xml
+super-price-api/.idea/replstate.xml
 
 # Crashlytics plugin (for Android Studio and IntelliJ)
 com_crashlytics_export_strings.xml
@@ -67,10 +67,10 @@ crashlytics-build.properties
 fabric.properties
 
 # Editor-based Rest Client
-.idea/httpRequests
+super-price-api/.idea/httpRequests
 
 # Android studio 3.1+ serialized cache file
-.idea/caches/build_file_checksums.ser
+super-price-api/.idea/caches/build_file_checksums.ser
 
 ### Intellij Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
@@ -81,14 +81,14 @@ fabric.properties
 # *.ipr
 
 # Sonarlint plugin
-.idea/**/sonarlint/
+super-price-api/.idea/**/sonarlint/
 
 # SonarQube Plugin
-.idea/**/sonarIssues.xml
+super-price-api/.idea/**/sonarIssues.xml
 
 # Markdown Navigator plugin
-.idea/**/markdown-navigator.xml
-.idea/**/markdown-navigator/
+super-price-api/.idea/**/markdown-navigator.xml
+super-price-api/.idea/**/markdown-navigator/
 
 ### Java ###
 # Compiled class file
@@ -145,11 +145,13 @@ $RECYCLE.BIN/
 # Project exclude paths
 /resources/
 /target/
-/db.properties
-/prices.iml
-/p.html
-/api_db.properties
-/.idea/checkstyleidea.tmp/*
-/.idea/checkstyleidea-libs/*
-/.idea/codeStyles/*
+/super-price-api/db.properties
+/super-price-api/api_db.properties
+/super-price-api/.idea/checkstyleidea.tmp/*
+/super-price-api/.idea/checkstyleidea-libs/*
+/super-price-api/.idea/codeStyles/*
+
+/super-price.iml
+/super-price-api/out/
+/.idea/libraries/
 

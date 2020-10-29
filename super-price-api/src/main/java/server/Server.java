@@ -14,7 +14,6 @@ import database.Database;
 import database.DbQuery;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import io.javalin.http.HttpResponseException;
 import io.javalin.http.util.RateLimit;
 import org.jetbrains.annotations.NotNull;
 import org.quartz.SchedulerException;
@@ -67,16 +66,19 @@ public class Server {
         log.info("Number of incomplete items: {}", inc.size());
 
         loadClasses();
-
         Javalin app =
                 Javalin.create(config -> {
                     config.defaultContentType = "application/json";
+                    config.addStaticFiles("/public");
+                    config.enableWebjars();
+                    config.precompressStaticFiles = true;
                     config.showJavalinBanner = false;
                 })
-                       .exception(HttpResponseException.class, (e, ctx) -> {
+                       /*.exception(HttpResponseException.class, (e, ctx) -> {
                            ctx.json(new JsonError("Too many requests. Please wait a few minutes."));
                            log.error("ip: {} exceeded rate limit.", getRealIp(ctx));
-                       })
+                           log.error("", e);
+                       })*/
                        .exception(Exception.class, (e, ctx) -> log.error("", e))
                        .error(404, ctx -> ctx.json(JsonError.build("Not found")))
                        .before(ctx -> {
@@ -85,6 +87,7 @@ public class Server {
                        })
                        .routes(() -> {
                            get("chains", Endpoints::getAllChains);
+                           get("ui", Endpoints::getSwaggerUi);
                            get("chains/:chainId/stores", Endpoints::getChainStores);
                            get("items", Endpoints::searchItems);
                            get("items/:itemId", Endpoints::getItemInfo);

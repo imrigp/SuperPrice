@@ -10,7 +10,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import database.DbQuery;
+import io.javalin.core.util.OptionalDependency;
+import io.javalin.core.util.Util;
 import io.javalin.http.Context;
+import org.intellij.lang.annotations.Language;
 import server.DatabaseState;
 import server.entities.Chain;
 import server.entities.Item;
@@ -71,6 +74,7 @@ public class Endpoints {
         }
     }
 
+
     public static void getChainStores(Context ctx) {
         try {
             Long chainId = Long.parseLong(ctx.pathParam("chainId"));
@@ -92,5 +96,61 @@ public class Endpoints {
         } catch (NumberFormatException e) {
             ctx.json(Collections.emptyList());
         }
+    }
+
+    public static void getSwaggerUi(Context ctx) {
+        String path = Util.getWebjarPublicPath(ctx, OptionalDependency.SWAGGERUI);
+
+        @Language("html")
+        String html = """
+                    <!-- HTML for static distribution bundle build -->
+                    <!DOCTYPE html>
+                    <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>Swagger UI</title>
+                            <link rel="stylesheet" type="text/css" href="%s/swagger-ui.css" >
+                            <link rel="icon" type="image/png" href="%s/favicon-32x32.png" sizes="32x32" />
+                            <link rel="icon" type="image/png" href="%s/favicon-16x16.png" sizes="16x16" />
+                            <style>
+                                html {
+                                    box-sizing: border-box;
+                                    overflow: -moz-scrollbars-vertical;
+                                    overflow-y: scroll;
+                                }
+                                *, *:before, *:after {
+                                    box-sizing: inherit;
+                                }
+                                body {
+                                    margin:0;
+                                    background: #fafafa;
+                                }
+                            </style>
+                        </head>
+                        <body>
+                            <div id="swagger-ui"></div>
+                            <script src="%s/swagger-ui-bundle.js"> </script>
+                            <script src="%s/swagger-ui-standalone-preset.js"> </script>
+                            <script>
+                            window.onload = function() {
+                                window.ui = SwaggerUIBundle({
+                                    url: "%s",
+                                    dom_id: "#swagger-ui",
+                                    deepLinking: true,
+                                    presets: [
+                                      SwaggerUIBundle.presets.apis,
+                                      SwaggerUIStandalonePreset
+                                    ],
+                                    plugins: [
+                                      SwaggerUIBundle.plugins.DownloadUrl
+                                    ],
+                                    layout: "StandaloneLayout"
+                                  })
+                            }
+                            </script>
+                        </body>
+                    </html>
+                """.formatted(path, path, path, path, path, "swagger-docs.yaml");
+        ctx.html(html);
     }
 }

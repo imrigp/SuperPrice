@@ -1,0 +1,244 @@
+openapi: 3.0.1
+info:
+  title: SuperPrice API
+  description: 'RESTful web service which provides real-time data about supermarket chains, stores, items, prices, and (soon) discounts.'
+  contact:
+    email: imrigp@gmail.com
+  version: 0.1.5
+servers:
+  - description: API Server
+    url: http://api.imri.ga/
+tags:
+  - name: chains
+  - name: stores
+  - name: items
+  - name: prices
+
+paths:
+  /chains:
+    get:
+      tags:
+        - chains
+      summary: Returns all chains.
+      responses:
+        '200':
+          description: An array of chains.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Chain'
+        default:
+          description: Unexpected error
+
+  /chains/{chainId}/stores:
+    get:
+      tags:
+        - stores
+      summary: Returns all stores of specific chain.
+      parameters:
+        - name: chainId
+          in: path
+          description: The chain id.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: An array of stores.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Store'
+        default:
+          description: Unexpected error
+
+  /stores:
+    get:
+      tags:
+        - stores
+      summary: Returns stores.
+      description: >
+        Leave the query parameters empty to receive a list of all stores.
+      parameters:
+        - name: city
+          in: query
+          description: The city name.
+          schema:
+            type: string
+        - name: groupBy
+          in: query
+          description: The search query.
+          schema:
+            type: string
+            enum:
+              - chain
+              - city
+      responses:
+        '200':
+          description: An array of stores.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Store'
+        default:
+          description: Unexpected error
+  /items:
+    get:
+      tags:
+        - items
+      summary: Returns items by search query.
+      parameters:
+        - name: name
+          in: query
+          required: true
+          description: The search query.
+          schema:
+            type: string
+            minimum: 1
+      responses:
+        '200':
+          description: An array of item objects.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+        default:
+          description: Unexpected error
+  /items/{itemId}:
+    get:
+      tags:
+        - items
+      summary: Returns item info.
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          description: The item id.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: An item object.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        default:
+          description: Unexpected error
+
+  /prices:
+    post:
+      tags:
+        - prices
+      summary: Returns price list of requested items.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - item_list
+              properties:
+                item_list:
+                  type: array
+                  items:
+                    type: integer
+                    format: int64
+                  example: [ 7290107646826,7290016953763 ]
+                chain_id:
+                  type: integer
+                  format: int64
+                  example: 7290027600007
+                store_id:
+                  type: integer
+                  format: int32
+                  example: 93
+      responses:
+        '200':
+          description: An item object.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Price'
+        default:
+          description: Unexpected error
+
+components:
+  schemas:
+    Chain:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 7290027600007
+        name:
+          type: string
+          example: שופרסל
+    Store:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 93
+        chain_id:
+          type: integer
+          format: int64
+          example: 7290027600007
+        name:
+          type: string
+          example: שלי יהוד- סביונים
+        address:
+          type: string
+          example: דרך משה דיין 7
+        city:
+          type: string
+          example: יהוד
+
+    Item:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ItemId'
+        name:
+          type: string
+          example: חטיף שוגי שוקו
+        manufacturer_name:
+          type: string
+          example: תלמה
+        manufacture_country:
+          type: string
+          example: ישראל
+        unit_quantity:
+          type: string
+          example: GRAM
+        quantity:
+          type: integer
+          format: int32
+          example: 188
+    Price:
+      type: object
+      properties:
+        item_id:
+          $ref: '#/components/schemas/ItemId'
+        price:
+          type: number
+          example: 10.5
+    ItemId:
+      type: integer
+      format: int64
+      example: 7290107646826
