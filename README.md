@@ -1,7 +1,7 @@
 # SuperPrice
 
 A Java RESTful web service which provides real-time data about supermarket chains, stores, items, prices, and (soon) discounts.   
-  
+There are 800+ stores, more than 120k items, and 4mil+ price records, which update regularly.
 ## Production
 
 I set up a production server:  
@@ -35,4 +35,5 @@ The API could be used for interesting purposes:
 - I intend to replace the somewhat naive item search function with Apache Solr. 
 Although the search itself is quite efficient right now (using compressed suffix tree), it lacks ranked searching, highlighting and fuzzy matching.  
 - I'm currently working on a website which will show the API capabilities.  
-
+- Finish indexing all chains (few left).
+- Add discounts to the database as well.
