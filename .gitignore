@@ -155,3 +155,21 @@ $RECYCLE.BIN/
 /super-price-api/out/
 /.idea/libraries/
 
+/.idea/checkstyle-idea.xml
+/.idea/workspace.xml
+/.idea/modules.xml
+/super-price-api/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+/.idea/jarRepositories.xml
+/super-price-api/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst
+/super-price-api/target/classes/public/swagger-docs.yaml
+/super-price-api/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+/.idea/encodings.xml
+/super-price-api/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/createdFiles.lst
+/.idea/compiler.xml
+/super-price-api/target/classes/logback.xml
+/super-price-api/target/lib/tika-1.24.1.pom
+/.idea/misc.xml
+/.idea/vcs.xml
+/super-price-api/target/maven-archiver/pom.properties
+/super-price-web/super-price-web.iml
+/super-price-api/super-price-api.iml

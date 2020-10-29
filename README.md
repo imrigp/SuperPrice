@@ -6,7 +6,8 @@ A Java RESTful web service which provides real-time data about supermarket chain
 
 I set up a production server:  
 http://api.imri.ga  
-I'm working on a website which utilizes the API to demonstrate the possibilities, but for now you could explore and test the API in the OpenApi page [here](http://api.imri.ga/ui).   
+I'm working on a website which utilizes the API to demonstrate the possibilities, but for now you could explore and test the API in the OpenApi page [here](http://api.imri.ga/ui).
+<br><br>
 ![image](https://user-images.githubusercontent.com/57985724/97604988-c7493b00-1a16-11eb-8474-ecc54d21c6b9.png)
 
 ## Background
