@@ -115,7 +115,7 @@ public class ItemDaoPostgres implements ItemDao {
     private static final String GET_ALL_ITEMS_SQL = "SELECT * FROM item";
     private static final String GET_INCOMPLETE_ITEMS_SQL =
             "SELECT * FROM item WHERE manufacturer_name IS NULL OR manufacture_country IS NULL " +
-                    "OR unit_quantity = 'unknown' OR quantity = 0";
+                    "OR unit_quantity = 'UNKNOWN' OR quantity = 0";
     private static final String ADD_ITEM_SQL =
             "INSERT INTO item (id, name, manufacturer_name, manufacture_country, unit_quantity, " +
                     "quantity, measure_unit) VALUES (?, ?, ?, ?, ?, ?, ?) " +

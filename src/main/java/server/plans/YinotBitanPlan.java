@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import server.Xml.XmlDownload;
-import server.Xml.XmlFile;
+import server.xml.XmlDownload;
+import server.xml.XmlFile;
 
 public class YinotBitanPlan extends Plan {
 

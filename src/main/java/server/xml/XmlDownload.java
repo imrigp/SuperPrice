@@ -1,4 +1,4 @@
-package server.Xml;
+package server.xml;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.Downloadable;
+import server.connection.Downloadable;
 
 public class XmlDownload implements Comparable<XmlDownload>, Downloadable<XmlDownload> {
     private static final Logger log = LoggerFactory.getLogger(XmlDownload.class);
@@ -63,7 +63,6 @@ public class XmlDownload implements Comparable<XmlDownload>, Downloadable<XmlDow
     }
 
     public XmlDownload download() {
-        log.info("fetching {}", xmlFile);
         HttpGet request = new HttpGet(uri);
 
         try (CloseableHttpResponse response = client.execute(request)) {

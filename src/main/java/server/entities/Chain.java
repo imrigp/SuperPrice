@@ -1,8 +1,13 @@
 package server.entities;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import server.entities.serializers.ChainSerializer;
+
+@JsonSerialize(using = ChainSerializer.class)
 public class Chain extends Entity {
     private long id;
     private String name;
@@ -20,6 +25,10 @@ public class Chain extends Entity {
 
     public void addStore(Store store) {
         stores.put(store.getStoreId(), store);
+    }
+
+    public void addStores(List<Store> stores) {
+        stores.forEach(this::addStore);
     }
 
     public long getId() {

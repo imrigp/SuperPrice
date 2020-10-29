@@ -10,6 +10,7 @@ import server.Utils;
 
 public class ItemDirty extends Item {
 
+    private static final Pattern HAS_LETTERS_PATTERN = Pattern.compile("[\\p{IsHebrew}\\w]{2,}");
     private static final Pattern EXTRACT_MEASURE_PATTERN = Pattern.compile("([\\p{IsHebrew}\\p{P}]+)\\s*(\\d+)|(\\d+)\\s*([\\p{IsHebrew}\\p{P}]+)");
     private static final Pattern EXTRACT_NAME_PATTERN = Pattern.compile("(.*?)([^%\\p{IsHebrew}\\w]+?)?$");
     private static final Pattern EXTRACT_UNIT_PATTERN = Pattern.compile(
@@ -18,7 +19,6 @@ public class ItemDirty extends Item {
     public ItemDirty() {
         super();
     }
-
 
     @Override
     public void setName(String name) {
@@ -78,11 +78,19 @@ public class ItemDirty extends Item {
 
     @Override
     public void setManufacturerName(String manufacturerName) {
+        if (manufacturerName == null || "לא ידוע".equals(manufacturerName) || "Unknown".equals(manufacturerName)
+                || !HAS_LETTERS_PATTERN.matcher(manufacturerName).matches()) {
+            manufacturerName = null;
+        }
         super.setManufacturerName(manufacturerName);
     }
 
     @Override
     public void setManufactureCountry(String manufactureCountry) {
+        if (manufactureCountry == null || "לא ידוע".equals(manufactureCountry) || "Unknown".equals(manufactureCountry)
+                || !HAS_LETTERS_PATTERN.matcher(manufactureCountry).matches()) {
+            manufactureCountry = null;
+        }
         super.setManufactureCountry(manufactureCountry);
     }
 

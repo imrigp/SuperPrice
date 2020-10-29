@@ -1,4 +1,4 @@
-package server;
+package server.connection;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.function.Consumer;
@@ -27,7 +27,6 @@ public class DownloaderThread<E extends Downloadable<E>> implements Runnable {
             }
             assert el != null;
             E f = el.download(); // download file
-            //System.out.println(Thread.currentThread().getName() + " downloaded: " + el);
             consumer.accept(f);
         }
     }

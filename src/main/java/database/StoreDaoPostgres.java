@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -40,6 +43,48 @@ public class StoreDaoPostgres implements StoreDao {
         }
 
         return stores;
+    }
+
+    @Override
+    public Map<String, List<Store>> searchStores(String city, String groupBy) {
+        Map<String, List<Store>> stores = new HashMap<>();
+
+        boolean useCity = true;
+        String query = SEARCH_STORES_SQL;
+        if (city == null || city.isEmpty()) {
+            query = GET_ALL_STORES_SQL;
+            useCity = false;
+        }
+
+        try (Connection db = ds.getConnection();
+             PreparedStatement pst = db.prepareStatement(query)) {
+
+            if (useCity) {
+                pst.setString(1, city);
+            }
+
+            try (ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    Store store = extractStoreFromResult(rs);
+                    switch (groupBy) {
+                        case "chain" -> stores.computeIfAbsent(
+                                String.valueOf(store.getChainId()), v -> new ArrayList<>()).add(store);
+                        case "city" -> stores.computeIfAbsent(
+                                String.valueOf(store.getCity()), v -> new ArrayList<>()).add(store);
+                        default -> stores.computeIfAbsent("all", v -> new ArrayList<>()).add(store);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            log.error("", e);
+        }
+        return stores;
+    }
+
+    @Override
+    public List<Store> searchStores(String city) {
+        return searchStores(city, "").getOrDefault("all", Collections.emptyList());
     }
 
     @Override
@@ -104,5 +149,7 @@ public class StoreDaoPostgres implements StoreDao {
                     "SET name = EXCLUDED.name, address = EXCLUDED.address, " +
                     "city = EXCLUDED.city, type = EXCLUDED.type";
     private static final String GET_STORE_SQL = "SELECT * FROM store WHERE id = ? AND chain_id = ?";
+    private static final String SEARCH_STORES_SQL = "SELECT * FROM store WHERE city = ?";
+    private static final String GET_ALL_STORES_SQL = "SELECT * FROM store";
     private static final String GET_CHAIN_STORES_SQL = "SELECT * FROM store WHERE chain_id = ?";
 }

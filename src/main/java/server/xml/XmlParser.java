@@ -1,4 +1,4 @@
-package server.Xml;
+package server.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -158,7 +158,7 @@ public final class XmlParser {
                                 case "manufacturecountry" -> item.setManufactureCountry(getElementText(parser));
                                 case "unitqty" -> item.setQuantityUnit(getElementText(parser));
                                 case "quantity" -> item.setQuantity(getElementText(parser));
-                                case "unitOfmeasure" -> item.setUnitOfMeasure(getElementText(parser));
+                                //case "unitofmeasure" -> item.setUnitOfMeasure(getElementText(parser));
                             }
                         }
                         storeItems.addItem(item);

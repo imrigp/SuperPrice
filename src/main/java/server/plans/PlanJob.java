@@ -1,9 +1,8 @@
-package server;
+package server.plans;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import server.plans.Plan;
 
 public class PlanJob implements Job {
 

@@ -2,6 +2,10 @@ package server.entities;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import server.entities.serializers.StoreSerializer;
+
+@JsonSerialize(using = StoreSerializer.class)
 public class Store extends Entity {
     private int storeId;
     private long chainId;

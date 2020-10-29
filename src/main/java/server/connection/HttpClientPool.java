@@ -1,4 +1,4 @@
-package server;
+package server.connection;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -49,7 +49,6 @@ public class HttpClientPool {
         return HttpClients.custom()
                           .setConnectionManagerShared(true)
                           .setConnectionManager(connManager)
-                          //.disableContentCompression()
                           .build();
     }
 

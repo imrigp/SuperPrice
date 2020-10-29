@@ -148,3 +148,8 @@ $RECYCLE.BIN/
 /db.properties
 /prices.iml
 /p.html
+/api_db.properties
+/.idea/checkstyleidea.tmp/*
+/.idea/checkstyleidea-libs/*
+/.idea/codeStyles/*
+

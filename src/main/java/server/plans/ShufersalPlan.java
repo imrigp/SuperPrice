@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import server.Xml.XmlDownload;
-import server.Xml.XmlFile;
+import server.xml.XmlDownload;
+import server.xml.XmlFile;
 
 public class ShufersalPlan extends Plan {
     private static final String STORES_FILE_URL = "http://prices.shufersal.co.il/FileObject/UpdateCategory?catID=5&storeId=0";

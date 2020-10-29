@@ -1,4 +1,4 @@
-package server;
+package server.plans;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
@@ -11,9 +11,9 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
-import server.Xml.XmlDownload;
-import server.Xml.XmlFile;
-import server.plans.Plan;
+import server.connection.DownloaderThread;
+import server.xml.XmlDownload;
+import server.xml.XmlFile;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;

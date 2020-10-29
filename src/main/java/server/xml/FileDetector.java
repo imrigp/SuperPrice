@@ -1,4 +1,4 @@
-package server.Xml;
+package server.xml;
 
 import java.io.IOException;
 import java.io.InputStream;

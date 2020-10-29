@@ -15,14 +15,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.DatabaseState;
-import server.HttpClientPool;
-import server.Xml.XmlDownload;
-import server.Xml.XmlFile;
+import server.connection.HttpClientPool;
+import server.xml.XmlDownload;
+import server.xml.XmlFile;
 import utils.Utils;
 
-import static server.Xml.XmlFile.Type.PRICE;
-import static server.Xml.XmlFile.Type.PRICEFULL;
-import static server.Xml.XmlFile.Type.STORES;
+import static server.xml.XmlFile.Type.PRICE;
+import static server.xml.XmlFile.Type.PRICEFULL;
+import static server.xml.XmlFile.Type.STORES;
 
 public abstract class Plan {
     private static final Logger log = LoggerFactory.getLogger(Plan.class);
@@ -109,7 +109,6 @@ public abstract class Plan {
                     }
                 }
             }
-            log.info("{}: got {}", name, xmlDownload);
             // consume (parse) the xmlFile
             xmlConsumer.accept(xmlDownload.getXmlFile());
         }

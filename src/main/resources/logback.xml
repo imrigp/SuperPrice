@@ -2,7 +2,8 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>%d{yyyy-mm-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level %logger{36} - %msg%n)
+            <pattern>
+                %d{yyyy-mm-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level %logger{36} - %msg%n)
             </pattern>
         </encoder>
     </appender>
@@ -10,6 +11,9 @@
     <logger name="com.zaxxer" level="OFF"/>
     <logger name="org.quartz" level="OFF"/>
     <logger name="org.apache" level="OFF"/>
+    <logger name="org.eclipse" level="OFF"/>
+    <logger name="o.eclipse" level="OFF"/>
+    <logger name="o.e.jetty" level="OFF"/>
 
 
     <root level="debug">

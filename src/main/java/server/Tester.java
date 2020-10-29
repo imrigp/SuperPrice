@@ -2,18 +2,21 @@ package server;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import server.connection.HttpClientPool;
 
 public class Tester {
 
     // TODO: 14/10/2020 Create daily task to delete old visited files
     // TODO: 14/10/2020 Pre-compile necessary regex
+
+    private static final Logger log = LoggerFactory.getLogger(Tester.class);
 
     public static void main(final String[] args) throws SQLException, IOException, XMLStreamException, InterruptedException, SchedulerException {
 
@@ -22,7 +25,6 @@ public class Tester {
             Server server = new Server();
             return;
         }
-
         long startTime = System.nanoTime();
         long estimatedTime = System.nanoTime() - startTime;
         System.out.println("Time Elapsed in seconds: " + TimeUnit.NANOSECONDS.toSeconds(estimatedTime));
@@ -32,20 +34,11 @@ public class Tester {
         HttpClientPool.shutdown();
     }
 
-    private static Object[] test(Object[] songs) {
-        int newLen = ThreadLocalRandom.current().nextInt(0, songs.length + 1);
+    private static void test() {
+        long startTime = System.nanoTime();
 
-        for (int i = 0; i < newLen; i++) {
-            int ind = ThreadLocalRandom.current().nextInt(i, songs.length);
-            swap(songs, i, ind);
-        }
-
-        return Arrays.copyOf(songs, newLen);
-    }
-
-    private static void swap(Object[] arr, int i, int j) {
-        Object tmp = arr[i];
-        arr[i] = arr[j];
-        arr[j] = tmp;
+        long estimatedTime = System.nanoTime() - startTime;
+        System.out.println("Time Elapsed in milliseconds: " + TimeUnit.NANOSECONDS.toMillis(estimatedTime));
+        System.out.println("Time Elapsed in seconds: " + TimeUnit.NANOSECONDS.toMillis(estimatedTime) / 1000.0);
     }
 }

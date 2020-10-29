@@ -1,4 +1,4 @@
-package server.Xml;
+package server.xml;
 
 import java.io.InputStream;
 import java.util.Arrays;

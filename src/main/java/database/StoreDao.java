@@ -8,6 +8,10 @@ import server.entities.Store;
 public interface StoreDao {
     List<Store> getChainStores(long chainId);
 
+    Map<String, List<Store>> searchStores(String city, String groupBy);
+
+    List<Store> searchStores(String city);
+
     Store getStore(long chainId, int storeId);
 
     void addStore(long chainId, Store store);

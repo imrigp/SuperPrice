@@ -1,18 +1,20 @@
 package database;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.jetbrains.annotations.NotNull;
 import server.entities.Chain;
 import server.entities.Item;
+import server.entities.ItemPrice;
 import server.entities.Store;
 import server.entities.StoreItems;
 
-public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao {
+public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao, ItemPriceDao {
 
     private static final boolean DB_OFF = false; // For debugging
     private static DbQuery instance;
@@ -21,6 +23,7 @@ public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao
     private static final StoreDao storeDao = new StoreDaoPostgres(ds);
     private static final StoreItemsDao storeItemsDao = new StoreItemsDaoPostgres(ds);
     private static final ItemDao itemDao = new ItemDaoPostgres(ds);
+    private static final ItemPriceDao itemPriceDao = new ItemPriceDaoPostgres(ds);
 
     private DbQuery() {
         if (instance != null) {
@@ -37,7 +40,7 @@ public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao
 
     public List<String> getParsedFiles() {
         if (DB_OFF) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return Database.getParsedFiles();
     }
@@ -66,7 +69,7 @@ public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao
     @Override
     public List<Chain> getAllChains() {
         if (DB_OFF) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return chainDao.getAllChains();
     }
@@ -90,7 +93,7 @@ public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao
     @Override
     public List<Item> searchItems(String name) {
         if (DB_OFF) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return itemDao.searchItems(name);
     }
@@ -98,7 +101,7 @@ public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao
     @Override
     public List<Item> getAllItems() {
         if (DB_OFF) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return itemDao.getAllItems();
     }
@@ -106,7 +109,7 @@ public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao
     @Override
     public List<Item> getIncompleteItems() {
         if (DB_OFF) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return itemDao.getIncompleteItems();
     }
@@ -138,9 +141,19 @@ public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao
     @Override
     public List<Store> getChainStores(long chainId) {
         if (DB_OFF) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         return storeDao.getChainStores(chainId);
+    }
+
+    @Override
+    public Map<String, List<Store>> searchStores(String city, String groupBy) {
+        return storeDao.searchStores(city, groupBy);
+    }
+
+    @Override
+    public List<Store> searchStores(String city) {
+        return storeDao.searchStores(city);
     }
 
     @Override
@@ -181,5 +194,14 @@ public final class DbQuery implements ChainDao, StoreItemsDao, StoreDao, ItemDao
             return;
         }
         storeItemsDao.addStoreItems(storeItems);
+    }
+
+    @NotNull
+    @Override
+    public List<ItemPrice> getItemsPrice(long chainId, int storeId, List<Long> itemIds) {
+        if (DB_OFF) {
+            return Collections.emptyList();
+        }
+        return itemPriceDao.getItemsPrice(chainId, storeId, itemIds);
     }
 }

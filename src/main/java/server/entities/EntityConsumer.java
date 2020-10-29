@@ -1,15 +1,9 @@
-package server;
+package server.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
-import server.entities.Chain;
-import server.entities.Entity;
-import server.entities.Item;
-import server.entities.Store;
-import server.entities.StoreItems;
+import server.DatabaseState;
+import server.Utils;
 
 public class EntityConsumer implements Consumer<Entity> {
     DatabaseState state;
@@ -27,7 +21,6 @@ public class EntityConsumer implements Consumer<Entity> {
         } else if (entity instanceof Store) {
             assert false;
         } else {
-            System.out.println("Unknown entity: " + entity.getClass());
             throw new RuntimeException("Unknown entity: " + entity.getClass());
         }
         Utils.updateMeasures();
@@ -47,17 +40,7 @@ public class EntityConsumer implements Consumer<Entity> {
             return;
         }
 
-        Map<Long, Item> dbItems = state.getAllDbItems();
-        Map<Long, Item> incompleteDbItems = state.getIncompleteDbItems();
-        List<Item> items = new ArrayList<>();
-
-        // Add item if it's either in the incomplete list or not in the db at all
-        state.addItems(
-                storeItems.getItems());
-        //.stream()
-        //.filter(item -> incompleteDbItems.containsKey(item.getId())
-        //        || !dbItems.containsKey(item.getId()))
-        //.collect(Collectors.toList()));
+        state.addItems(storeItems.getItems());
         state.addStoreItems(storeItems);
     }
 }

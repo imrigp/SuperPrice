@@ -16,8 +16,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import server.Xml.XmlDownload;
-import server.Xml.XmlFile;
+import server.xml.XmlDownload;
+import server.xml.XmlFile;
 
 //todo Add a head request to check connection to speed things up
 
@@ -121,7 +121,6 @@ public class CerberusPlan extends Plan {
             try {
                 xmlFile = new XmlFile(fname);
             } catch (IllegalArgumentException e) {
-                log.error("", e);
                 continue; // Not valid xml file name
             }
 

@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import server.entities.serializers.ItemSerializer;
+
+@JsonSerialize(using = ItemSerializer.class)
 public class Item extends Entity {
     private String name;
     private String manufacturerName;
@@ -67,9 +71,6 @@ public class Item extends Entity {
     }
 
     public void setManufacturerName(String manufacturerName) {
-        if ("לא ידוע".equals(manufacturerName) || "Unknown".equals(manufacturerName)) {
-            manufacturerName = null;
-        }
         this.manufacturerName = manufacturerName;
     }
 
@@ -78,10 +79,6 @@ public class Item extends Entity {
     }
 
     public void setManufactureCountry(String manufactureCountry) {
-        if ("לא ידוע".equals(manufactureCountry) || "Unknown".equals(manufactureCountry)) {
-            manufactureCountry = null;
-        }
-
         this.manufactureCountry = manufactureCountry;
     }
 
@@ -134,17 +131,17 @@ public class Item extends Entity {
 
     @Override
     public String toString() {
-        return "Id: " + id + "\nName: " + name + "\nPrice: " + price + "\n";
+        return "Id:" + id + "\tName: " + name;
     }
 
     public enum QuantityUnit {
         GRAM("גרם", "גרמים", "גר", "ג", "ג'", "ג`", "גר'", "גר`"),
-        LITER("ליטר", "ליטרים", "ל", "ל'", "ל`"),
-        KILO("קילו", "קילוגרם", "קילוגרמים", "קג", "ק", "ק\"ג", "ק'", "ק'ג", "ק`", "ק`ג", "לקג"),
+        LITER("ליטר", "ליטרים", "ל", "ל'", "ל`", "ליטור"),
+        KILO("קילו", "קילוגרם", "קילוגרמים", "קג", "ק", "ק\"ג", "ק'", "ק'ג", "ק`", "ק`ג", "לקג", "לק\"ג"),
         ML("מיליליטר", "מיליליטרים", "מל", "מ\"ל", "מ", "מ'ל", "מ`ל"),
         CM("סמ", "ס\"מ", "סנטימטר"),
         METER("מטר", "מטרים"),
-        UNIT("יחידה", "יח'", "יח`", "יח", "יחי", "יחידו"),
+        UNIT("יחידה", "יח'", "יח`", "יח", "יחי", "יחידו", "פריט", "יחידנ"),
         UNKNOWN();
 
         final List<String> aliases = new ArrayList<>();
@@ -161,6 +158,7 @@ public class Item extends Entity {
 
         static {
             for (QuantityUnit value : QuantityUnit.values()) {
+                ALIAS_MAP.put(value.name(), value);
                 value.aliases.forEach(a -> ALIAS_MAP.put(a, value));
             }
         }

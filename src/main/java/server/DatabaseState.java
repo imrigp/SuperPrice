@@ -9,11 +9,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import database.DbQuery;
-import server.Xml.XmlDownload;
-import server.Xml.XmlFile;
 import server.entities.Chain;
 import server.entities.Item;
+import server.entities.Store;
 import server.entities.StoreItems;
+import server.xml.XmlDownload;
+import server.xml.XmlFile;
 
 public final class DatabaseState {
 
@@ -37,6 +38,12 @@ public final class DatabaseState {
                 db.getAllChains()
                   .stream()
                   .collect(Collectors.toConcurrentMap(Chain::getId, Function.identity()));
+
+        for (Map.Entry<Long, Chain> chainEntry : chains.entrySet()) {
+            final List<Store> chainStores = db.getChainStores(chainEntry.getKey());
+            chainEntry.getValue().addStores(chainStores);
+        }
+
         incompleteDbItems =
                 db.getIncompleteItems()
                   .stream()

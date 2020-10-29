@@ -40,7 +40,7 @@ public final class Database {
         if (ds != null) {
             return ds;
         }
-        Properties props = readProperties("resources\\db.properties");
+        Properties props = readProperties("db.properties");
         HikariConfig config = new HikariConfig(props);
         ds = new HikariDataSource(config);
         return ds;
@@ -49,7 +49,6 @@ public final class Database {
     public static void createTables(boolean override) throws SQLException {
         try (Connection db = getDataSource().getConnection();
              Statement st = db.createStatement()) {
-
             if (override) {
                 st.executeUpdate("DROP TABLE IF EXISTS price");
                 st.executeUpdate("DROP TABLE IF EXISTS store");

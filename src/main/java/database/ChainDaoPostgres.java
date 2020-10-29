@@ -43,7 +43,7 @@ public class ChainDaoPostgres implements ChainDao {
     public Chain getChain(long id) {
         Chain chain = null;
         try (Connection db = ds.getConnection();
-             PreparedStatement pst = db.prepareStatement(GET_CHAINS_SQL)) {
+             PreparedStatement pst = db.prepareStatement(GET_CHAIN_SQL)) {
 
             pst.setLong(1, id);
 
@@ -81,5 +81,5 @@ public class ChainDaoPostgres implements ChainDao {
                     "DO UPDATE " +
                     "SET name = EXCLUDED.name";
     private static final String GET_ALL_CHAINS_SQL = "SELECT * FROM chain";
-    private static final String GET_CHAINS_SQL = "SELECT * FROM chain WHERE id = ?";
+    private static final String GET_CHAIN_SQL = "SELECT * FROM chain WHERE id = ?";
 }
