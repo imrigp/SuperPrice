@@ -50,6 +50,10 @@ public class Endpoints {
     private Endpoints() {
     }
 
+    public static void getMainEndpoint(Context ctx) {
+        ctx.json(JsonError.build("Please visit /ui to explore the API endpoints."));
+    }
+
     public static void getPrices(Context ctx) {
         final long chainId;
         final int storeId;
@@ -111,7 +115,7 @@ public class Endpoints {
         try {
             long itemId = Long.parseLong(ctx.pathParam("itemId"));
             final Item item = state.getAllDbItems().get(itemId);
-            ctx.json(Objects.requireNonNullElseGet(item, () -> new JsonError("Item not found.")));
+            ctx.json(Objects.requireNonNullElseGet(item, () -> JsonError.build("Item not found.")));
         } catch (NumberFormatException e) {
             ctx.json(Collections.emptyList());
         }

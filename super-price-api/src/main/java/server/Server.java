@@ -34,6 +34,7 @@ import database.Database;
 import database.DbQuery;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
 import io.javalin.http.util.RateLimit;
 import org.jetbrains.annotations.NotNull;
 import org.quartz.SchedulerException;
@@ -54,9 +55,11 @@ import static io.javalin.apibuilder.ApiBuilder.post;
 
 public class Server {
     private static final Logger log = LoggerFactory.getLogger(Server.class);
+    public static final int PORT = 8081;
     private static final int DOWNLOAD_THREADS = 20;
     private static final int MAX_REQUESTS_PER_MINUTE = 50;
-    public static final int PORT = 8081;
+    private static final int HTTP_TOO_MANY_REQUESTS_ERROR = 429;
+    private static final int HTTP_NOT_FOUND_ERROR = 404;
 
     private final DbQuery db;
     private final XmlParser parser;
@@ -71,7 +74,6 @@ public class Server {
         db = DbQuery.getInstance();
 
         state = DatabaseState.getInstance();
-        //state.clearState();
 
         entityConsumer = new EntityConsumer(state);
         parser = new XmlParser(entityConsumer);
@@ -94,18 +96,22 @@ public class Server {
                     config.precompressStaticFiles = true;
                     config.showJavalinBanner = false;
                 })
-                       /*.exception(HttpResponseException.class, (e, ctx) -> {
-                           ctx.json(new JsonError("Too many requests. Please wait a few minutes."));
-                           log.error("ip: {} exceeded rate limit.", getRealIp(ctx));
-                           log.error("", e);
-                       })*/
+                       .exception(HttpResponseException.class, (e, ctx) -> {
+                           if (e.getStatus() == HTTP_TOO_MANY_REQUESTS_ERROR) {
+                               ctx.json(JsonError.build("Too many requests. Please wait a few minutes."));
+                               log.error("ip: {} exceeded rate limit.", getRealIp(ctx));
+                           } else {
+                               log.error("", e);
+                           }
+                       })
                        .exception(Exception.class, (e, ctx) -> log.error("", e))
-                       .error(404, ctx -> ctx.json(JsonError.build("Not found")))
+                       .error(HTTP_NOT_FOUND_ERROR, ctx -> ctx.json(JsonError.build("Not found")))
                        .before(ctx -> {
                            new RateLimit(ctx).requestPerTimeUnit(MAX_REQUESTS_PER_MINUTE, TimeUnit.MINUTES);
                            log.debug("{} request: {}", getRealIp(ctx), ctx.fullUrl());
                        })
                        .routes(() -> {
+                           get("/", Endpoints::getMainEndpoint);
                            get("chains", Endpoints::getAllChains);
                            get("ui", Endpoints::getSwaggerUi);
                            get("chains/:chainId/stores", Endpoints::getChainStores);
@@ -124,8 +130,7 @@ public class Server {
 
     private void initDb() {
         try {
-            Database.createTables(false);
-            //db.clearTables();
+            Database.initialize(false);
         } catch (SQLException e) {
             log.error("Error while creating tables: ", e);
             System.exit(1);
@@ -151,9 +156,7 @@ public class Server {
             for (Plan plan : plans) {
                 manager.addPlan(plan);
             }
-
-            //manager.start();
-            //manager.shutdown();
+            manager.start();
         } catch (SchedulerException e) {
             log.error("", e);
             System.exit(1);

@@ -66,10 +66,10 @@ public final class Database {
         return ds;
     }
 
-    public static void createTables(boolean override) throws SQLException {
+    public static void initialize(boolean overrideTables) throws SQLException {
         try (Connection db = getDataSource().getConnection();
              Statement st = db.createStatement()) {
-            if (override) {
+            if (overrideTables) {
                 st.executeUpdate("DROP TABLE IF EXISTS price");
                 st.executeUpdate("DROP TABLE IF EXISTS store");
                 st.executeUpdate("DROP TABLE IF EXISTS chain");

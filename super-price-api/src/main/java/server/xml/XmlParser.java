@@ -22,7 +22,6 @@ package server.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,7 +32,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import server.DatabaseState;
@@ -72,17 +70,6 @@ public final class XmlParser {
 
     private Optional<Entity> parseDispatcher(final XmlFile xmlFile) {
         if (xmlFile.getInputStream() == null) {
-            return Optional.empty();
-        }
-
-        // for debugging
-        if (false) {
-            try {
-                String s = IOUtils.toString(xmlFile.getResponseInputStream().get(), StandardCharsets.UTF_8.name());
-                System.out.println(s);
-            } catch (IOException e) {
-                log.error("Parsing error in {}:{}", xmlFile, e);
-            }
             return Optional.empty();
         }
 
